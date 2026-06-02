@@ -325,6 +325,60 @@ html[data-theme="dark"] .panel-link-configure {
     color: #4caf50;
 }
 
+.more-panels-framework {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--body-quiet-color, #666);
+}
+
+.more-panels-framework__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0.5;
+}
+
+.more-panels-framework__body {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.more-panels-framework__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--darkened-bg, #f0f0f0);
+    color: var(--body-quiet-color, #888);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-right: 2px;
+}
+
+.more-panels-framework__name {
+    font-weight: 500;
+    color: var(--body-fg, #333);
+}
+
+.more-panels-framework__sep {
+    color: var(--border-color, #ccc);
+}
+
+.more-panels-framework__link {
+    flex-shrink: 0;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
 .panel-link-code {
     font-family: var(--font-family-monospace, monospace);
     font-size: 13px;

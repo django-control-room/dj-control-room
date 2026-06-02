@@ -213,6 +213,33 @@
                 </a>
             </div>
         </div>
+
+        {% if core_panel %}
+        <div class="more-panels-framework">
+            <div class="more-panels-framework__icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                    <path d="M2 12h20"/>
+                </svg>
+            </div>
+            <div class="more-panels-framework__body">
+                <span class="more-panels-framework__label">Framework</span>
+                <span class="more-panels-framework__name">{{ core_panel.name }}</span>
+                <span class="more-panels-framework__sep">—</span>
+                <span class="more-panels-framework__desc">{{ core_panel.description }}</span>
+            </div>
+            {% if core_panel.configured %}
+            <a href="{{ core_panel.url }}" class="panel-link more-panels-framework__link">
+                Design system <span class="arrow">→</span>
+            </a>
+            {% elif core_panel.docs_url %}
+            <a href="{{ core_panel.docs_url }}" class="panel-link more-panels-framework__link" target="_blank" rel="noopener noreferrer">
+                Docs <span class="arrow">↗</span>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

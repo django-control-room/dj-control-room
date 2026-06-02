@@ -184,18 +184,39 @@ def get_featured_panels():
     return featured_panels
 
 
+# IDs of first-party infrastructure packages that should not appear as
+# community panels on the dashboard. They are presented separately in the
+# hub's footer/framework section.
+CORE_PANEL_IDS = {"dj_control_room_base"}
+
+
 def get_community_panels():
     """
-    Get community (non-featured) panels.
+    Get community (non-featured, non-core) panels.
 
     Returns:
         list: List of community panel data
     """
     featured_ids = get_featured_panel_ids()
+    excluded_ids = set(featured_ids) | CORE_PANEL_IDS
     community_panels = []
 
     for panel in registry.get_panels():
-        if panel._registry_id not in featured_ids:
+        if panel._registry_id not in excluded_ids:
             community_panels.append(get_panel_data(panel))
 
     return community_panels
+
+
+def get_core_panel():
+    """
+    Return display data for the core framework panel (dj-control-room-base),
+    or None if it is not installed/registered.
+
+    Returns:
+        dict | None: Panel data dictionary, or None
+    """
+    panel = registry.get_panel("dj_control_room_base")
+    if panel is None:
+        return None
+    return get_panel_data(panel)
