@@ -3,6 +3,7 @@ Panel Registry for DJ Control Room.
 
 Discovers and manages panels registered via Python entry points.
 """
+
 import logging
 import sys
 
@@ -17,48 +18,50 @@ def _normalize_package_name(name):
 class PanelRegistry:
     """
     Registry for Control Room panels.
-    
+
     Discovers panels via Python package entry points in the
     'dj_control_room.panels' group.
     """
-    
+
     ENTRY_POINT_GROUP = "dj_control_room.panels"
-    
+
     def __init__(self):
         self._panels = {}
         self._discovered = False
-    
+
     def autodiscover(self):
         """
         Discover all panels registered via entry points.
-        
+
         Looks for entry points in the 'dj_control_room.panels' group.
         Each entry point should point to a panel class that implements
         the required interface.
         """
         if self._discovered:
             return
-        
+
         self._discovered = True
-        
+
         # Use different import based on Python version
         if sys.version_info >= (3, 10):
             from importlib.metadata import entry_points
+
             eps = entry_points(group=self.ENTRY_POINT_GROUP)
         else:
             # Python 3.9 compatibility
             from importlib.metadata import entry_points
+
             eps = entry_points().get(self.ENTRY_POINT_GROUP, [])
-        
+
         for ep in eps:
             try:
                 self._load_panel(ep)
             except Exception as e:
                 logger.warning(
                     f"Failed to load panel '{ep.name}' from {ep.value}: {e}",
-                    exc_info=True
+                    exc_info=True,
                 )
-    
+
     def _load_panel(self, entry_point):
         """
         Load a single panel from an entry point.
@@ -151,7 +154,9 @@ class PanelRegistry:
             )
             return True
 
-        if _normalize_package_name(actual_dist) != _normalize_package_name(expected_package):
+        if _normalize_package_name(actual_dist) != _normalize_package_name(
+            expected_package
+        ):
             logger.warning(
                 f"Panel '{panel_id}' from distribution '{actual_dist}' is NOT "
                 f"authorized to use this ID (expected '{expected_package}'). "
@@ -160,22 +165,22 @@ class PanelRegistry:
             return False
 
         return True
-    
+
     def _validate_panel(self, panel, entry_point_name):
         """
         Validate that a panel has required attributes and methods.
-        
+
         Args:
             panel: The panel instance to validate
             entry_point_name: Name of the entry point (for error messages)
-            
+
         Raises:
             ValueError: If panel is missing required attributes/methods
         """
-        required_attrs = ['name', 'description', 'icon']
+        required_attrs = ["name", "description", "icon"]
         required_methods = []  # No required methods - all have defaults
-        optional_methods = ['get_url_name', 'get_urls']
-        
+        optional_methods = ["get_url_name", "get_urls"]
+
         # Check required attributes
         for attr in required_attrs:
             if not hasattr(panel, attr):
@@ -188,7 +193,7 @@ class PanelRegistry:
                     f"Panel from entry point '{entry_point_name}' "
                     f"has empty/None value for required attribute: {attr}"
                 )
-        
+
         # Check required methods
         for method in required_methods:
             if not hasattr(panel, method):
@@ -201,7 +206,7 @@ class PanelRegistry:
                     f"Panel from entry point '{entry_point_name}' "
                     f"attribute '{method}' is not callable"
                 )
-        
+
         # Check optional methods are callable if present
         for method in optional_methods:
             if hasattr(panel, method) and not callable(getattr(panel, method)):
@@ -209,14 +214,14 @@ class PanelRegistry:
                     f"Panel from entry point '{entry_point_name}' "
                     f"attribute '{method}' is not callable"
                 )
-    
+
     def register(self, panel_class, panel_id=None):
         """
         Manually register a panel class.
-        
+
         This is useful for testing or for apps that want to register
         panels programmatically rather than via entry points.
-        
+
         Args:
             panel_class: The panel class to register
             panel_id: Required. The unique registry key for this panel (normally
@@ -248,53 +253,86 @@ class PanelRegistry:
 
         self._panels[panel_id] = panel
         logger.debug(f"Manually registered panel '{panel_id}' ({panel.name})")
-    
+
     def get_panels(self):
         """
         Get all registered panels.
-        
+
         Returns:
             list: List of panel instances
         """
         if not self._discovered:
             self.autodiscover()
-        
+
         return list(self._panels.values())
-    
+
     def get_panel(self, panel_id):
         """
         Get a specific panel by ID.
-        
+
         Args:
             panel_id: The ID of the panel to retrieve
-            
+
         Returns:
             Panel instance or None if not found
         """
         if not self._discovered:
             self.autodiscover()
-        
+
         return self._panels.get(panel_id)
-    
+
     def is_registered(self, panel_id):
         """
         Check if a panel is registered.
-        
+
         Args:
             panel_id: The ID to check
-            
+
         Returns:
             bool: True if the panel is registered
         """
         if not self._discovered:
             self.autodiscover()
-        
+
         return panel_id in self._panels
-    
+
+    def get_tools_for_user(self, user):
+        """
+        Return all panel tools accessible to ``user``.
+
+        Iterates every registered panel, calls ``get_config()`` on each, and
+        collects tools whose scope the user has permission to access.  Tool
+        names are namespaced as ``<panel_id>__<tool_name>`` so they are
+        globally unique across all panels.
+
+        Returns a dict mapping the namespaced tool name to a
+        ``(panel, tool)`` tuple so callers can reach both the tool definition
+        and the originating panel without a second lookup.
+
+        This is intentionally called at request time (never at startup) so
+        that ``get_config()`` local imports are always safe.
+        """
+        if not self._discovered:
+            self.autodiscover()
+
+        result = {}
+        for panel_id, panel in self._panels.items():
+            # for backwards compatibility, we support both PanelPlugin and Panel classes
+            # that don't have a get_config method. They will simply not expose any tools.
+            has_config = hasattr(panel, "get_config")
+            config = panel.get_config() if has_config else None
+            if config is None:
+                continue
+            for tool in config.tools:
+                if config._check_permission(user, tool.scope):
+                    key = f"{panel_id}__{tool.name}"
+                    result[key] = (panel, tool)
+        return result
+
     def clear(self):
         """
         Clear all registered panels.
-        
+
         Useful for testing.
         """
         self._panels.clear()

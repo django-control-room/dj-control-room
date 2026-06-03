@@ -7,6 +7,13 @@ DEFAULTS = {
     "PANEL_ADMIN_REGISTRATION": {},
     "LOAD_DEFAULT_CSS": True,
     "EXTRA_CSS": [],
+    # MCP Streamable HTTP transport.
+    # MCP_ENABLED must be True to activate the /mcp/ endpoint (default: disabled).
+    # MCP_TOKEN: required secret Bearer token.
+    # MCP_USERNAME: required Django username whose permissions apply to tool calls.
+    "MCP_ENABLED": False,
+    "MCP_TOKEN": None,
+    "MCP_USERNAME": None,
 }
 
 

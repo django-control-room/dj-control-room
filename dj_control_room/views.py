@@ -1,14 +1,10 @@
-import json
-
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.contrib import admin
 from django.urls import reverse
-from django.views.decorators.http import require_POST
 
 from .conf import get_css_context
 from .featured_panels import get_featured_panel_metadata
