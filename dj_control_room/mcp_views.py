@@ -27,11 +27,11 @@ Configure in ``.cursor/mcp.json``::
 import json
 import logging
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from .conf import panel_config
 from .registry import registry
 
 logger = logging.getLogger(__name__)
@@ -45,16 +45,11 @@ _SERVER_INFO = {"name": "dj-control-room", "version": "1.0.0"}
 # ---------------------------------------------------------------------------
 
 
-def _get_configured_token():
-    cr_settings = getattr(settings, "DJ_CONTROL_ROOM_SETTINGS", {})
-    return cr_settings.get("MCP_TOKEN")
-
-
 class _MisconfiguredError(Exception):
     """Raised when MCP settings are present but incomplete."""
 
 
-def _resolve_user(cr_settings):
+def _resolve_user():
     """
     Return the Django User configured for MCP access.
 
@@ -64,7 +59,7 @@ def _resolve_user(cr_settings):
     """
     from django.contrib.auth import get_user_model
 
-    username = cr_settings.get("MCP_USERNAME")
+    username = panel_config.get_settings("MCP_USERNAME")
     if not username:
         raise _MisconfiguredError(
             "MCP_USERNAME is not set in DJ_CONTROL_ROOM_SETTINGS. "
@@ -88,8 +83,7 @@ def _authenticate(request):
     Returns a Django User on success, raises _MisconfiguredError for config
     problems, or returns None for auth failures (wrong / missing token).
     """
-    cr_settings = getattr(settings, "DJ_CONTROL_ROOM_SETTINGS", {})
-    configured_token = cr_settings.get("MCP_TOKEN")
+    configured_token = panel_config.get_settings("MCP_TOKEN")
 
     if not configured_token:
         raise _MisconfiguredError(
@@ -104,7 +98,7 @@ def _authenticate(request):
     if provided_token != configured_token:
         return None
 
-    return _resolve_user(cr_settings)
+    return _resolve_user()
 
 
 # ---------------------------------------------------------------------------
@@ -198,8 +192,7 @@ def mcp_endpoint(request):
     Disabled entirely when ``DJ_CONTROL_ROOM_SETTINGS["MCP_ENABLED"]`` is False
     (returns 404).  Requires both ``MCP_TOKEN`` and ``MCP_USERNAME`` to be set.
     """
-    cr_settings = getattr(settings, "DJ_CONTROL_ROOM_SETTINGS", {})
-    if not cr_settings.get("MCP_ENABLED", False):
+    if not panel_config.get_settings("MCP_ENABLED"):
         from django.http import Http404
         raise Http404
 

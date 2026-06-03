@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.apps import apps as django_apps
 import logging
 
-from .conf import get_config
+from .conf import panel_config
 from .registry import registry
 from .featured_panels import FEATURED_PANELS, get_featured_panel_ids, is_featured_panel
 
@@ -40,8 +40,8 @@ def should_register_panel_admin(panel_id=None):
             }
         }
     """
-    panel_specific_configs = get_config("PANEL_ADMIN_REGISTRATION")
-    global_panel_config = get_config("REGISTER_PANELS_IN_ADMIN")
+    panel_specific_configs = panel_config.get_settings("PANEL_ADMIN_REGISTRATION")
+    global_panel_config = panel_config.get_settings("REGISTER_PANELS_IN_ADMIN")
 
     # Per-panel settings take precedence when provided (explicit allow/deny per panel)
     if panel_id and panel_specific_configs:

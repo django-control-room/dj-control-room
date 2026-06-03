@@ -1,12 +1,10 @@
-from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
-from django.contrib import admin
 from django.urls import reverse
 
-from .conf import get_css_context
+from .conf import panel_config
 from .featured_panels import get_featured_panel_metadata
 from .registry import registry
 from .utils import (
@@ -17,7 +15,7 @@ from .utils import (
 )
 
 
-@staff_member_required
+@panel_config.permission_required("dashboard")
 def index(request):
     """
     Display panel dashboard.
@@ -25,27 +23,23 @@ def index(request):
     Shows featured panels first (with install prompts if not installed),
     followed by community panels.
     """
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-
     featured_panels = get_featured_panels()
     community_panels = get_community_panels()
     core_panel = get_core_panel()
 
-    context.update(
-        {
-            "title": "",
-            "featured_panels": featured_panels,
-            "community_panels": community_panels,
-            "has_community_panels": len(community_panels) > 0,
-            "core_panel": core_panel,
-        }
+    context = panel_config.get_context(
+        request,
+        title="",
+        featured_panels=featured_panels,
+        community_panels=community_panels,
+        has_community_panels=len(community_panels) > 0,
+        core_panel=core_panel,
     )
 
     return render(request, "admin/dj_control_room/index.html", context)
 
 
-@staff_member_required
+@panel_config.permission_required("install")
 def install_panel(request, panel_id):
     """
     Installation guide page for featured panels.
@@ -54,9 +48,6 @@ def install_panel(request, panel_id):
     Accessible whether or not the panel is currently installed/configured.
     Uses a panel-specific template if available, otherwise falls back to generic.
     """
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-
     panel_meta = get_featured_panel_metadata(panel_id)
 
     if not panel_meta:
@@ -97,16 +88,15 @@ def install_panel(request, panel_id):
         except Exception:
             pass
 
-    context.update(
-        {
-            "panel": panel_meta,
-            "is_installed": config["pip_installed"],
-            "is_in_installed_apps": config["in_installed_apps"],
-            "is_configured": config["is_configured"],
-            "panel_url": panel_url,
-            "panel_url_prefix": f"admin/{panel_id}",
-            "panel_app_name": panel_app_name,
-        }
+    context = panel_config.get_context(
+        request,
+        panel=panel_meta,
+        is_installed=config["pip_installed"],
+        is_in_installed_apps=config["in_installed_apps"],
+        is_configured=config["is_configured"],
+        panel_url=panel_url,
+        panel_url_prefix=f"admin/{panel_id}",
+        panel_app_name=panel_app_name,
     )
 
     template_name = f"admin/dj_control_room/install_panel_{panel_id}.html"
