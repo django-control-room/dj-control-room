@@ -88,6 +88,13 @@ def install_panel(request, panel_id):
         except Exception:
             pass
 
+    # Resolve features: plugin instance is canonical; fall back to the
+    # featured_panels metadata for panels that aren't installed yet.
+    features = getattr(panel_instance, "features", None)
+    if not features:
+        features = panel_meta.get("features", [])
+    panel_meta = {**panel_meta, "features": features}
+
     context = panel_config.get_context(
         request,
         panel=panel_meta,
