@@ -1,5 +1,5 @@
 {% extends "dj_control_room_base/panel_base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block panel_title %}{{ title|default:"Django Control Room" }}{% endblock %}
 
@@ -9,6 +9,10 @@
 
 {% block panel_breadcrumbs %}
 &rsaquo; {% trans "Control Room" %}
+{% endblock %}
+
+{% block panel_styles %}
+<link rel="stylesheet" href="{% static 'dj_control_room/css/hub.css' %}">
 {% endblock %}
 
 {% block panel_content %}

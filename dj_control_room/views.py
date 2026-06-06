@@ -60,6 +60,7 @@ def install_panel(request, panel_id):
                 "name": community_panel.name,
                 "description": community_panel.description,
                 "icon": community_panel.icon,
+                "icon_color": community_panel.icon_color,
                 "package": community_panel.package,
                 "docs_url": getattr(community_panel, "docs_url", None),
                 "pypi_url": getattr(community_panel, "pypi_url", None),

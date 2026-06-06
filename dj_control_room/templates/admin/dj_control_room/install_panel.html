@@ -1,5 +1,5 @@
 {% extends "admin/dj_control_room/base.html" %}
-{% load i18n static %}
+{% load i18n static dcr_icons %}
 
 {% block panel_content %}
 <div class="dcr-content dcr-content--md">
@@ -7,22 +7,8 @@
 {# Page header — icon, name, status badge, description, open button #}
 <div class="dcr-page-header">
   <div class="dcr-page-header__main">
-    <div class="dcr-page-header__icon" style="background:var(--dcr-color-accent)">
-      {% if panel.icon == "database" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
-      {% elif panel.icon == "layers" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-      {% elif panel.icon == "chart" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      {% elif panel.icon == "link" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      {% elif panel.icon == "radio" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
-      {% elif panel.icon == "alert" %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      {% else %}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-      {% endif %}
+    <div class="dcr-page-header__icon dcr-icon-color--{{ panel.icon_color }}">
+      {% dcr_icon panel.icon %}
     </div>
     <div class="dcr-page-header__body">
       <div class="dcr-page-header__title-row">
@@ -53,7 +39,7 @@
 <div class="dcr-d-flex dcr-flex-col dcr-gap-xs">
   {% for feature in panel.features %}
   <div class="dcr-d-flex dcr-items-baseline dcr-gap-sm dcr-text-md">
-    {% include "admin/dj_control_room/partials/icon_check.html" with stroke="var(--dcr-color-success)" stroke_width="2.5" svg_class="dcr-flex-none" svg_style="margin-top:1px" %}
+    {% include "admin/dj_control_room/partials/icon_check.html" with stroke="var(--dcr-color-success)" stroke_width="2.5" svg_class="dcr-flex-none dcr-feature-icon" %}
     <span>{{ feature }}</span>
   </div>
   {% endfor %}
@@ -78,9 +64,8 @@
       <h4 class="dcr-steps__title">{% trans "Install the package" %}</h4>
       <div class="dcr-steps__content">
         <span class="dcr-d-block dcr-text-base dcr-text-muted dcr-mb-sm">{% trans "Add the panel to your project via pip." %}</span>
-        <code class="dcr-code dcr-code--block dcr-m-0" style="position:relative;padding-right:2.5rem">pip install {{ panel.package }}<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn"
+        <code class="dcr-code dcr-code--block dcr-code--copyable">pip install {{ panel.package }}<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn dcr-copy-btn--center"
                 data-copy="pip install {{ panel.package }}"
-                style="position:absolute;top:50%;right:var(--dcr-space-xs);transform:translateY(-50%)"
                 title="{% trans 'Copy' %}">{% include "admin/dj_control_room/partials/icon_copy.html" %}</button></code>
       </div>
     </div>
@@ -95,12 +80,11 @@
       <h4 class="dcr-steps__title">{% trans "Add to INSTALLED_APPS" %}</h4>
       <div class="dcr-steps__content">
         <span class="dcr-d-block dcr-text-base dcr-text-muted dcr-mb-sm">{% trans "Register the app in your Django settings." %}</span>
-        <code class="dcr-code dcr-code--block dcr-m-0" style="position:relative;padding-right:2.5rem">INSTALLED_APPS = [
+        <code class="dcr-code dcr-code--block dcr-code--copyable">INSTALLED_APPS = [
     # ...
     "{{ panel_app_name }}",
-]<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn"
+]<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn dcr-copy-btn--top"
                 data-copy='INSTALLED_APPS = [&#10;    # ...&#10;    "{{ panel_app_name }}",&#10;]'
-                style="position:absolute;top:var(--dcr-space-xs);right:var(--dcr-space-xs)"
                 title="{% trans 'Copy' %}">{% include "admin/dj_control_room/partials/icon_copy.html" %}</button></code>
       </div>
     </div>
@@ -115,12 +99,11 @@
       <h4 class="dcr-steps__title">{% trans "Add URLs to urls.py" %}</h4>
       <div class="dcr-steps__content">
         <span class="dcr-d-block dcr-text-base dcr-text-muted dcr-mb-sm">{% trans "Wire up the panel's URL routes." %}</span>
-        <code class="dcr-code dcr-code--block dcr-m-0" style="position:relative;padding-right:2.5rem">urlpatterns = [
+        <code class="dcr-code dcr-code--block dcr-code--copyable">urlpatterns = [
     # ...
     path("{{ panel_url_prefix }}/", include("{{ panel_app_name }}.urls")),
-]<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn"
+]<button class="dcr-btn dcr-btn--ghost dcr-btn--sm dcr-copy-btn dcr-copy-btn--top"
                 data-copy='urlpatterns = [&#10;    # ...&#10;    path("{{ panel_url_prefix }}/", include("{{ panel_app_name }}.urls")),&#10;]'
-                style="position:absolute;top:var(--dcr-space-xs);right:var(--dcr-space-xs)"
                 title="{% trans 'Copy' %}">{% include "admin/dj_control_room/partials/icon_copy.html" %}</button></code>
       </div>
     </div>
