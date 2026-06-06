@@ -130,8 +130,8 @@ def get_panel_data(panel):
         "id": panel_id,
         "name": panel.name,
         "description": panel.description,
-        "icon": panel.icon,
-        "icon_color": panel.icon_color,
+        "icon": getattr(panel, "icon", "default"),
+        "icon_color": getattr(panel, "icon_color", "muted"),
         "url": url,
         "installed": True,
         "configured": config["is_configured"],
@@ -161,6 +161,12 @@ def get_featured_panels():
 
         if installed_panel:
             panel_data = get_panel_data(installed_panel)
+            # If the panel object doesn't define icon/icon_color, prefer the
+            # curated featured metadata so hub cards stay visually consistent.
+            if getattr(installed_panel, "icon", None) in (None, "default"):
+                panel_data["icon"] = featured_meta.get("icon", "default")
+            if not hasattr(installed_panel, "icon_color"):
+                panel_data["icon_color"] = featured_meta.get("icon_color", "muted")
         else:
             coming_soon = featured_meta.get("coming_soon", False)
             panel_data = {

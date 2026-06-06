@@ -7,7 +7,7 @@
 {# Page header — icon, name, status badge, description, open button #}
 <div class="dcr-page-header">
   <div class="dcr-page-header__main">
-    <div class="dcr-page-header__icon dcr-icon-color--{{ panel.icon_color }}">
+    <div class="dcr-page-header__icon{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% endif %}">
       {% dcr_icon panel.icon %}
     </div>
     <div class="dcr-page-header__body">

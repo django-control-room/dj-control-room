@@ -34,7 +34,7 @@
   <div class="dcr-panel-card{% if panel.coming_soon %} dcr-panel-card--coming-soon{% endif %}">
     <div class="dcr-panel-card__top">
 
-      <div class="dcr-panel-card__icon-wrap dcr-icon-color--{{ panel.icon_color }}">
+      <div class="dcr-panel-card__icon-wrap{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% endif %}">
         {% dcr_icon panel.icon "dcr-panel-card__icon" %}
       </div>
 
