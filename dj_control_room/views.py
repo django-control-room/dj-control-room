@@ -12,6 +12,7 @@ from .utils import (
     get_featured_panels,
     get_community_panels,
     get_core_panel,
+    _normalize_icon_color,
 )
 
 
@@ -60,7 +61,7 @@ def install_panel(request, panel_id):
                 "name": community_panel.name,
                 "description": community_panel.description,
                 "icon": getattr(community_panel, "icon", "default"),
-                "icon_color": getattr(community_panel, "icon_color", "muted"),
+                "icon_color": _normalize_icon_color(getattr(community_panel, "icon_color", None)),
                 "package": community_panel.package,
                 "docs_url": getattr(community_panel, "docs_url", None),
                 "pypi_url": getattr(community_panel, "pypi_url", None),

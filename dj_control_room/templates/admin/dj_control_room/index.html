@@ -80,7 +80,7 @@
   {% for panel in community_panels %}
   <div class="dcr-panel-card">
     <div class="dcr-panel-card__top">
-      <div class="dcr-panel-card__icon-wrap dcr-panel-card__icon-wrap--purple">
+      <div class="dcr-panel-card__icon-wrap{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% else %} dcr-icon-color--purple{% endif %}">
         {% dcr_icon panel.icon "dcr-panel-card__icon" %}
       </div>
       {% if panel.configured %}

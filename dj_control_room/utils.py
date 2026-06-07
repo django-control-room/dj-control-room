@@ -12,6 +12,10 @@ from .featured_panels import FEATURED_PANELS, get_featured_panel_ids, is_feature
 
 logger = logging.getLogger(__name__)
 
+_VALID_ICON_COLORS = frozenset({
+    "accent", "success", "warning", "danger", "info", "muted", "purple", "indigo",
+})
+
 
 def should_register_panel_admin(panel_id=None):
     """
@@ -92,6 +96,13 @@ def get_panel_config_status(panel_id, panel_app_name):
     }
 
 
+def _normalize_icon_color(color, fallback: str = "muted") -> str:
+    """Return color if it's a valid dcr-icon-color variant, otherwise fallback."""
+    if color and color in _VALID_ICON_COLORS:
+        return color
+    return fallback
+
+
 def get_panel_data(panel):
     """
     Extract data from a registered panel instance.
@@ -131,7 +142,7 @@ def get_panel_data(panel):
         "name": panel.name,
         "description": panel.description,
         "icon": getattr(panel, "icon", "default"),
-        "icon_color": getattr(panel, "icon_color", "muted"),
+        "icon_color": _normalize_icon_color(getattr(panel, "icon_color", None)),
         "url": url,
         "installed": True,
         "configured": config["is_configured"],
@@ -166,7 +177,7 @@ def get_featured_panels():
             if getattr(installed_panel, "icon", None) in (None, "default"):
                 panel_data["icon"] = featured_meta.get("icon", "default")
             if not hasattr(installed_panel, "icon_color"):
-                panel_data["icon_color"] = featured_meta.get("icon_color", "muted")
+                panel_data["icon_color"] = _normalize_icon_color(featured_meta.get("icon_color"))
         else:
             coming_soon = featured_meta.get("coming_soon", False)
             panel_data = {
@@ -174,7 +185,7 @@ def get_featured_panels():
                 "name": featured_meta["name"],
                 "description": featured_meta["description"],
                 "icon": featured_meta["icon"],
-                "icon_color": featured_meta.get("icon_color", "muted"),
+                "icon_color": _normalize_icon_color(featured_meta.get("icon_color")),
                 "url": reverse("dj_control_room:install_panel", args=[panel_id]),
                 "status": "coming_soon" if coming_soon else "not_installed",
                 "status_label": "COMING SOON" if coming_soon else "NOT INSTALLED",
