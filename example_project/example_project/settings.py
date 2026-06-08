@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "dj_control_room_base",
     "dj_control_room",
     "dj_cache_panel",
     "example_project.apps.ExampleProjectConfig",  # Registers example panels
