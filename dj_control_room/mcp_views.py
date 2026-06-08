@@ -68,7 +68,7 @@ def _resolve_user():
         )
 
     User = get_user_model()
-    user = User.objects.filter(username=username, is_staff=True).first()
+    user = User.objects.filter(username=username, is_staff=True, is_active=True).first()
     if user is None:
         raise _MisconfiguredError(
             f"MCP_USERNAME '{username}' does not match any active staff user."
@@ -86,15 +86,13 @@ def _authenticate(request):
     configured_token = panel_config.get_settings("MCP_TOKEN")
 
     if not configured_token:
-        raise _MisconfiguredError(
-            "MCP_TOKEN is not set in DJ_CONTROL_ROOM_SETTINGS."
-        )
+        raise _MisconfiguredError("MCP_TOKEN is not set in DJ_CONTROL_ROOM_SETTINGS.")
 
     auth_header = request.headers.get("Authorization", "")
     if not auth_header.startswith("Bearer "):
         return None
 
-    provided_token = auth_header[len("Bearer "):]
+    provided_token = auth_header[len("Bearer ") :]
     if provided_token != configured_token:
         return None
 
@@ -120,26 +118,32 @@ def _error(rpc_id, code, message):
 
 
 def _handle_initialize(rpc_id, params):
-    return _result(rpc_id, {
-        "protocolVersion": _PROTOCOL_VERSION,
-        "capabilities": {"tools": {}},
-        "serverInfo": _SERVER_INFO,
-    })
+    return _result(
+        rpc_id,
+        {
+            "protocolVersion": _PROTOCOL_VERSION,
+            "capabilities": {"tools": {}},
+            "serverInfo": _SERVER_INFO,
+        },
+    )
 
 
 def _handle_tools_list(rpc_id, user):
     tools = registry.get_tools_for_user(user)
-    return _result(rpc_id, {
-        "tools": [
-            {
-                "name": key,
-                "description": tool.description,
-                # MCP spec uses camelCase for the schema key
-                "inputSchema": tool.input_schema,
-            }
-            for key, (panel, tool) in tools.items()
-        ]
-    })
+    return _result(
+        rpc_id,
+        {
+            "tools": [
+                {
+                    "name": key,
+                    "description": tool.description,
+                    # MCP spec uses camelCase for the schema key
+                    "inputSchema": tool.input_schema,
+                }
+                for key, (panel, tool) in tools.items()
+            ]
+        },
+    )
 
 
 def _handle_tools_call(rpc_id, params, user):
@@ -153,7 +157,9 @@ def _handle_tools_call(rpc_id, params, user):
 
     available = registry.get_tools_for_user(user)
     if tool_name not in available:
-        return _error(rpc_id, -32602, f"Tool '{tool_name}' not found or not accessible.")
+        return _error(
+            rpc_id, -32602, f"Tool '{tool_name}' not found or not accessible."
+        )
 
     panel, tool = available[tool_name]
     config = panel.get_config()
@@ -163,16 +169,22 @@ def _handle_tools_call(rpc_id, params, user):
         outcome = tool.handler(ctx)
     except Exception as exc:
         logger.exception("MCP tool '%s' raised an exception", tool_name)
-        return _result(rpc_id, {
-            "content": [{"type": "text", "text": str(exc)}],
-            "isError": True,
-        })
+        return _result(
+            rpc_id,
+            {
+                "content": [{"type": "text", "text": str(exc)}],
+                "isError": True,
+            },
+        )
 
     text = json.dumps({"message": outcome.message, "data": outcome.data}, indent=2)
-    return _result(rpc_id, {
-        "content": [{"type": "text", "text": text}],
-        "isError": not outcome.success,
-    })
+    return _result(
+        rpc_id,
+        {
+            "content": [{"type": "text", "text": text}],
+            "isError": not outcome.success,
+        },
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -194,6 +206,7 @@ def mcp_endpoint(request):
     """
     if not panel_config.get_settings("MCP_ENABLED"):
         from django.http import Http404
+
         raise Http404
 
     try:
@@ -216,12 +229,17 @@ def mcp_endpoint(request):
     except (json.JSONDecodeError, UnicodeDecodeError):
         return JsonResponse(_error(None, -32700, "Parse error."), status=400)
 
+    if not isinstance(body, dict):
+        return JsonResponse(_error(None, -32600, "Invalid Request."), status=400)
+
     # JSON-RPC notifications have no "id" key — acknowledge and move on.
     if "id" not in body:
         return JsonResponse({}, status=202)
 
     method = body.get("method", "")
     params = body.get("params") or {}
+    if not isinstance(params, dict):
+        return JsonResponse(_error(body.get("id"), -32602, "Invalid params."), status=400)
     rpc_id = body.get("id")
 
     if method == "initialize":
