@@ -72,7 +72,7 @@
 {# Community panels                                                    #}
 {# ------------------------------------------------------------------ #}
 {% if has_community_panels %}
-<div class="dcr-section-header" style="margin-top:var(--dcr-space-lg)">
+<div class="dcr-section-header dcr-mt-lg">
   <h3 class="dcr-section-header__title">{% trans "Community Panels" %}</h3>
 </div>
 
@@ -106,7 +106,7 @@
 {# ------------------------------------------------------------------ #}
 {# Footer — More panels / Build your own / Framework                   #}
 {# ------------------------------------------------------------------ #}
-<div class="dcr-split-card" style="margin-top:var(--dcr-space-lg)">
+<div class="dcr-split-card dcr-mt-lg">
 
   <div class="dcr-split-card__section">
     <div class="dcr-panel-card__icon-wrap dcr-panel-card__icon-wrap--info">
@@ -143,16 +143,16 @@
 </div>
 
 {% if core_panel %}
-<div class="dcr-split-card" style="margin-top:var(--dcr-space-sm)">
-  <div class="dcr-split-card__section" style="flex-direction:row;align-items:center;gap:var(--dcr-space-sm)">
-    <span style="font-size:var(--dcr-text-xs);color:var(--dcr-color-text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600">{% trans "Framework" %}</span>
-    <span style="font-size:var(--dcr-text-sm);font-weight:600">{{ core_panel.name }}</span>
-    <span style="color:var(--dcr-color-text-muted)">—</span>
-    <span style="font-size:var(--dcr-text-sm);color:var(--dcr-color-text-muted)">{{ core_panel.description }}</span>
+<div class="dcr-split-card dcr-mt-sm">
+  <div class="dcr-split-card__section dcr-flex-row dcr-items-center dcr-gap-sm">
+    <span class="dcr-text-xs dcr-text-muted dcr-text-uppercase dcr-font-semibold" style="letter-spacing:.05em">{% trans "Framework" %}</span>
+    <span class="dcr-text-sm dcr-font-semibold">{{ core_panel.name }}</span>
+    <span class="dcr-text-muted">—</span>
+    <span class="dcr-text-sm dcr-text-muted">{{ core_panel.description }}</span>
     {% if core_panel.configured %}
-    <a href="{{ core_panel.url }}" class="dcr-panel-card__link" style="margin-left:auto">{% trans "Design system" %} →</a>
+    <a href="{{ core_panel.url }}" class="dcr-panel-card__link dcr-ml-auto">{% trans "Design system" %} →</a>
     {% elif core_panel.docs_url %}
-    <a href="{{ core_panel.docs_url }}" class="dcr-panel-card__link" style="margin-left:auto" target="_blank" rel="noopener noreferrer">{% trans "Docs" %} ↗</a>
+    <a href="{{ core_panel.docs_url }}" class="dcr-panel-card__link dcr-ml-auto" target="_blank" rel="noopener noreferrer">{% trans "Docs" %} ↗</a>
     {% endif %}
   </div>
 </div>
