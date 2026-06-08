@@ -57,7 +57,7 @@ jobs:
           POSTGRES_DB: postgres
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: unittests,python-${{ matrix.python-version }},django-${{ matrix.django-version }}
