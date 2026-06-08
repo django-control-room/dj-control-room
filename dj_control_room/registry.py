@@ -317,16 +317,23 @@ class PanelRegistry:
 
         result = {}
         for panel_id, panel in self._panels.items():
-            # for backwards compatibility, we support both PanelPlugin and Panel classes
-            # that don't have a get_config method. They will simply not expose any tools.
-            has_config = hasattr(panel, "get_config")
-            config = panel.get_config() if has_config else None
-            if config is None:
-                continue
-            for tool in config.tools:
-                if config._check_permission(user, tool.scope):
-                    key = f"{panel_id}__{tool.name}"
-                    result[key] = (panel, tool)
+            try:
+                # for backwards compatibility, we support both PanelPlugin and Panel classes
+                # that don't have a get_config method. They will simply not expose any tools.
+                has_config = hasattr(panel, "get_config")
+                config = panel.get_config() if has_config else None
+                if config is None:
+                    continue
+                for tool in config.tools:
+                    if config._check_permission(user, tool.scope):
+                        key = f"{panel_id}__{tool.name}"
+                        result[key] = (panel, tool)
+            except Exception:
+                logger.warning(
+                    "Skipping tools for panel '%s' because its config could not be loaded.",
+                    panel_id,
+                    exc_info=True,
+                )
         return result
 
     def clear(self):
