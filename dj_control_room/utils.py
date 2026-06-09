@@ -6,11 +6,15 @@ from django.urls import reverse
 from django.apps import apps as django_apps
 import logging
 
-from .conf import get_config
+from .conf import panel_config
 from .registry import registry
 from .featured_panels import FEATURED_PANELS, get_featured_panel_ids, is_featured_panel
 
 logger = logging.getLogger(__name__)
+
+_VALID_ICON_COLORS = frozenset({
+    "accent", "success", "warning", "danger", "info", "muted", "purple", "indigo",
+})
 
 
 def should_register_panel_admin(panel_id=None):
@@ -40,8 +44,8 @@ def should_register_panel_admin(panel_id=None):
             }
         }
     """
-    panel_specific_configs = get_config("PANEL_ADMIN_REGISTRATION")
-    global_panel_config = get_config("REGISTER_PANELS_IN_ADMIN")
+    panel_specific_configs = panel_config.get_settings("PANEL_ADMIN_REGISTRATION")
+    global_panel_config = panel_config.get_settings("REGISTER_PANELS_IN_ADMIN")
 
     # Per-panel settings take precedence when provided (explicit allow/deny per panel)
     if panel_id and panel_specific_configs:
@@ -92,6 +96,13 @@ def get_panel_config_status(panel_id, panel_app_name):
     }
 
 
+def _normalize_icon_color(color, fallback: str = "muted") -> str:
+    """Return color if it's a valid dcr-icon-color variant, otherwise fallback."""
+    if color and color in _VALID_ICON_COLORS:
+        return color
+    return fallback
+
+
 def get_panel_data(panel):
     """
     Extract data from a registered panel instance.
@@ -130,7 +141,8 @@ def get_panel_data(panel):
         "id": panel_id,
         "name": panel.name,
         "description": panel.description,
-        "icon": panel.icon,
+        "icon": getattr(panel, "icon", "default"),
+        "icon_color": _normalize_icon_color(getattr(panel, "icon_color", None)),
         "url": url,
         "installed": True,
         "configured": config["is_configured"],
@@ -160,6 +172,12 @@ def get_featured_panels():
 
         if installed_panel:
             panel_data = get_panel_data(installed_panel)
+            # If the panel object doesn't define icon/icon_color, prefer the
+            # curated featured metadata so hub cards stay visually consistent.
+            if getattr(installed_panel, "icon", None) in (None, "default"):
+                panel_data["icon"] = featured_meta.get("icon", "default")
+            if not hasattr(installed_panel, "icon_color"):
+                panel_data["icon_color"] = _normalize_icon_color(featured_meta.get("icon_color"))
         else:
             coming_soon = featured_meta.get("coming_soon", False)
             panel_data = {
@@ -167,6 +185,7 @@ def get_featured_panels():
                 "name": featured_meta["name"],
                 "description": featured_meta["description"],
                 "icon": featured_meta["icon"],
+                "icon_color": _normalize_icon_color(featured_meta.get("icon_color")),
                 "url": reverse("dj_control_room:install_panel", args=[panel_id]),
                 "status": "coming_soon" if coming_soon else "not_installed",
                 "status_label": "COMING SOON" if coming_soon else "NOT INSTALLED",
@@ -184,18 +203,39 @@ def get_featured_panels():
     return featured_panels
 
 
+# IDs of first-party infrastructure packages that should not appear as
+# community panels on the dashboard. They are presented separately in the
+# hub's footer/framework section.
+CORE_PANEL_IDS = {"dj_control_room_base"}
+
+
 def get_community_panels():
     """
-    Get community (non-featured) panels.
+    Get community (non-featured, non-core) panels.
 
     Returns:
         list: List of community panel data
     """
     featured_ids = get_featured_panel_ids()
+    excluded_ids = set(featured_ids) | CORE_PANEL_IDS
     community_panels = []
 
     for panel in registry.get_panels():
-        if panel._registry_id not in featured_ids:
+        if panel._registry_id not in excluded_ids:
             community_panels.append(get_panel_data(panel))
 
     return community_panels
+
+
+def get_core_panel():
+    """
+    Return display data for the core framework panel (dj-control-room-base),
+    or None if it is not installed/registered.
+
+    Returns:
+        dict | None: Panel data dictionary, or None
+    """
+    panel = registry.get_panel("dj_control_room_base")
+    if panel is None:
+        return None
+    return get_panel_data(panel)

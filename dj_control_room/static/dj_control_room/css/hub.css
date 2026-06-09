@@ -1,0 +1,14 @@
+/*
+ * dj-control-room hub styles
+ *
+ * Extends the dj_control_room_base design system with hub-specific
+ * component tweaks. Panel packages follow the same pattern via their
+ * own CSS file declared in EXTRA_CSS.
+ */
+
+/* Align the checkmark icon with the text baseline in feature lists.
+ * SVGs sit slightly high relative to text baseline — 1px nudge keeps
+ * them visually centred against the adjacent label. */
+.dcr-feature-icon {
+  margin-top: 1px;
+}

@@ -6,10 +6,11 @@ grouped under the "DJ Control Room" app in the admin sidebar.
 """
 
 import logging
+
 from django.contrib import admin
 from django.db import models
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+
+from dj_control_room_base.core import BasePanelAdmin
 
 from .registry import registry
 from .utils import should_register_panel_admin
@@ -122,26 +123,15 @@ def _register_panel_admin(panel):
     url_name = getattr(panel, "get_url_name", lambda: "index")()
     panel_id = panel.app_name
 
-    # Build redirect URL at request time so reverse() uses the loaded URLconf
-    def make_changelist_view(panel_id, url_name):
-        """Create a changelist view that redirects to the panel."""
-
-        def changelist_view(self, request, extra_context=None):
-            panel_url = reverse(f"{panel_id}:{url_name}")
-            return HttpResponseRedirect(panel_url)
-
-        return changelist_view
-
-    admin_attrs = {
-        "changelist_view": make_changelist_view(panel_id, url_name),
-        "has_add_permission": lambda self, request: False,
-        "has_change_permission": lambda self, request, obj=None: request.user.is_staff,
-        "has_delete_permission": lambda self, request, obj=None: False,
-        "has_view_permission": lambda self, request, obj=None: request.user.is_staff,
-    }
+    # panel_config is None for older panels that don't inherit from PanelPlugin
+    # or haven't implemented get_config(). BasePanelAdmin falls back to is_staff.
+    panel_config = getattr(panel, "get_config", lambda: None)()
 
     admin_class_name = f"{model_name}Admin"
-    admin_class = type(admin_class_name, (admin.ModelAdmin,), admin_attrs)
+    admin_class = type(admin_class_name, (BasePanelAdmin,), {
+        "redirect_url_name": f"{panel_id}:{url_name}",
+        "panel_config": panel_config,
+    })
 
     # Register it with the admin site
     admin.site.register(model_class, admin_class)

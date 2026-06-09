@@ -1,218 +1,163 @@
 {% extends "admin/dj_control_room/base.html" %}
-{% load i18n admin_urls static admin_list %}
+{% load i18n dcr_icons %}
 
-{% block content %}
-<div class="control-room-container">
-    <div class="control-room-header">
-        <img src="{% static 'dj_control_room/images/glyph.png' %}" alt="DCR" class="header-glyph" />
-        <h1 class="header-title">Django Control Room</h1>
-    </div>
-    <div class="header-subtitle">
-        <p>Select a panel to view monitoring tools.</p>
-    </div>
+{% block panel_content %}
 
-    <div class="panels-section">
-        <h2>FEATURED PANELS</h2>
-        <div class="panels-grid">
-            {% for panel in featured_panels %}
-            <div class="panel-card {% if panel.coming_soon %}panel-coming-soon{% elif not panel.installed %}panel-not-installed{% endif %}">
-                <div class="panel-card-header">
-                    <div class="panel-icon panel-icon-{{ panel.icon }}">
-                        {% if panel.icon == "database" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                        </svg>
-                        {% elif panel.icon == "layers" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                        {% elif panel.icon == "chart" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="14"/>
-                        </svg>
-                        {% elif panel.icon == "link" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                        </svg>
-                        {% elif panel.icon == "radio" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="2"/>
-                            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-                        </svg>
-                        {% elif panel.icon == "alert" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                            <line x1="12" y1="9" x2="12" y2="13"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                        {% endif %}
-                    </div>
-                    {% if panel.installed and panel.configured %}
-                    <div class="panel-status panel-status-installed">
-                        INSTALLED
-                    </div>
-                    {% elif panel.installed %}
-                    <div class="panel-status panel-status-configuring">
-                        SETUP
-                        <div class="panel-config-steps">
-                            <div class="panel-config-step {% if panel.pip_installed %}done{% endif %}"></div>
-                            <div class="panel-config-step {% if panel.in_installed_apps %}done{% endif %}"></div>
-                            <div class="panel-config-step {% if panel.urls_registered %}done{% endif %}"></div>
-                        </div>
-                    </div>
-                    {% elif panel.coming_soon %}
-                    <div class="panel-status panel-status-coming-soon">
-                        COMING SOON
-                    </div>
-                    {% else %}
-                    <div class="panel-status panel-status-not-installed">
-                        NOT INSTALLED
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="panel-card-body">
-                    <h3>{{ panel.name }}</h3>
-                    <p>{{ panel.description }}</p>
-                    {% if panel.configured %}
-                    <a href="{{ panel.url }}" class="panel-link">
-                        View panel <span class="arrow">→</span>
-                    </a>
-                    {% elif panel.installed %}
-                    <a href="{{ panel.url }}" class="panel-link panel-link-configure">
-                        Configure <span class="arrow">→</span>
-                    </a>
-                    {% elif panel.coming_soon %}
-                    <span class="panel-link-coming-soon">
-                        Coming soon
-                    </span>
-                    {% else %}
-                    <a href="{{ panel.url }}" class="panel-link panel-link-install">
-                        Install panel <span class="arrow">→</span>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+<div class="dcr-content dcr-content--xl">
 
-    {% if has_community_panels %}
-    <div class="panels-section">
-        <h2>COMMUNITY PANELS</h2>
-        <div class="panels-grid">
-            {% for panel in community_panels %}
-            <div class="panel-card">
-                <div class="panel-card-header">
-                    <div class="panel-icon panel-icon-{{ panel.icon }}">
-                        {% if panel.icon == "database" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                        </svg>
-                        {% elif panel.icon == "layers" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                        {% elif panel.icon == "chart" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="14"/>
-                        </svg>
-                        {% elif panel.icon == "link" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                        </svg>
-                        {% elif panel.icon == "radio" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="2"/>
-                            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-                        </svg>
-                        {% elif panel.icon == "alert" %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                            <line x1="12" y1="9" x2="12" y2="13"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                        {% endif %}
-                    </div>
-                    {% if panel.configured %}
-                    <div class="panel-status panel-status-installed">
-                        INSTALLED
-                    </div>
-                    {% else %}
-                    <div class="panel-status panel-status-configuring">
-                        SETUP
-                        <div class="panel-config-steps">
-                            <div class="panel-config-step {% if panel.pip_installed %}done{% endif %}"></div>
-                            <div class="panel-config-step {% if panel.in_installed_apps %}done{% endif %}"></div>
-                            <div class="panel-config-step {% if panel.urls_registered %}done{% endif %}"></div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="panel-card-body">
-                    <h3>{{ panel.name }}</h3>
-                    <p>{{ panel.description }}</p>
-                    {% if panel.configured %}
-                    <a href="{{ panel.url }}" class="panel-link">
-                        View panel <span class="arrow">→</span>
-                    </a>
-                    {% else %}
-                    <a href="{{ panel.url }}" class="panel-link panel-link-configure">
-                        Configure <span class="arrow">→</span>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+{# ------------------------------------------------------------------ #}
+{# Page header                                                         #}
+{# ------------------------------------------------------------------ #}
+<div class="dcr-page-header">
+  <div class="dcr-page-header__main">
+    <div class="dcr-page-header__icon dcr-icon-color--success-solid">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 14" style="width:28px;height:13px" aria-hidden="true">
+        <text x="15" y="11" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="0">DCR</text>
+      </svg>
     </div>
-    {% endif %}
-
-    <div class="more-panels-section">
-        <div class="more-panels-block">
-            <div class="more-panels-half">
-                <div class="panel-icon panel-icon-more-coming">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                </div>
-                <h3>More panels on the way</h3>
-                <p>We're building more tools to bring full observability to your Django admin. Follow our progress on GitHub.</p>
-                <a href="https://github.com/yassi/dj-control-room" class="panel-link more-panels-link" target="_blank" rel="noopener noreferrer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-                    GitHub <span class="arrow">↗</span>
-                </a>
-            </div>
-            <div class="more-panels-half">
-                <div class="panel-icon panel-icon-build-own">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5"/>
-                        <path d="M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <h3>Build your own panel</h3>
-                <p>Django Control Room is built to be extended. Use our cookiecutter template to scaffold a fully structured panel plugin in seconds.</p>
-                <a href="https://github.com/yassi/cookiecutter-django-admin-panel" class="panel-link" target="_blank" rel="noopener noreferrer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-                    cookiecutter-django-admin-panel <span class="arrow">↗</span>
-                </a>
-            </div>
-        </div>
+    <div class="dcr-page-header__body">
+      <h1 class="dcr-page-header__title">{% trans "Django Control Room" %}</h1>
+      <p class="dcr-page-header__subtitle">{% trans "Select a panel to view monitoring tools." %}</p>
     </div>
+  </div>
 </div>
+
+{# ------------------------------------------------------------------ #}
+{# Featured panels                                                     #}
+{# ------------------------------------------------------------------ #}
+<div class="dcr-section-header">
+  <h3 class="dcr-section-header__title">{% trans "Featured Panels" %}</h3>
+</div>
+
+<div class="dcr-panel-grid">
+  {% for panel in featured_panels %}
+  <div class="dcr-panel-card{% if panel.coming_soon %} dcr-panel-card--coming-soon{% endif %}">
+    <div class="dcr-panel-card__top">
+
+      <div class="dcr-panel-card__icon-wrap{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% endif %}">
+        {% dcr_icon panel.icon "dcr-panel-card__icon" %}
+      </div>
+
+      {% if panel.configured %}
+      <span class="dcr-badge dcr-badge--success">{% trans "INSTALLED" %}</span>
+      {% elif panel.installed %}
+      <span class="dcr-badge dcr-badge--warning">{% trans "SETUP" %}</span>
+      {% elif panel.coming_soon %}
+      <span class="dcr-badge dcr-badge--warning">{% trans "COMING SOON" %}</span>
+      {% else %}
+      <span class="dcr-badge dcr-badge--muted">{% trans "NOT INSTALLED" %}</span>
+      {% endif %}
+
+    </div>
+
+    <h3 class="dcr-panel-card__title">{{ panel.name }}</h3>
+    <p class="dcr-panel-card__desc">{{ panel.description }}</p>
+
+    <div class="dcr-panel-card__footer">
+      {% if panel.configured %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "View panel" %}</a>
+      {% elif panel.installed %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "Configure" %}</a>
+      {% elif panel.coming_soon %}
+      <span class="dcr-panel-card__link dcr-panel-card__link--muted">{% trans "Coming soon" %}</span>
+      {% else %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "Install panel" %}</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{# ------------------------------------------------------------------ #}
+{# Community panels                                                    #}
+{# ------------------------------------------------------------------ #}
+{% if has_community_panels %}
+<div class="dcr-section-header dcr-mt-lg">
+  <h3 class="dcr-section-header__title">{% trans "Community Panels" %}</h3>
+</div>
+
+<div class="dcr-panel-grid">
+  {% for panel in community_panels %}
+  <div class="dcr-panel-card">
+    <div class="dcr-panel-card__top">
+      <div class="dcr-panel-card__icon-wrap{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% else %} dcr-icon-color--purple{% endif %}">
+        {% dcr_icon panel.icon "dcr-panel-card__icon" %}
+      </div>
+      {% if panel.configured %}
+      <span class="dcr-badge dcr-badge--success">{% trans "INSTALLED" %}</span>
+      {% else %}
+      <span class="dcr-badge dcr-badge--muted">{% trans "NOT INSTALLED" %}</span>
+      {% endif %}
+    </div>
+    <h3 class="dcr-panel-card__title">{{ panel.name }}</h3>
+    <p class="dcr-panel-card__desc">{{ panel.description }}</p>
+    <div class="dcr-panel-card__footer">
+      {% if panel.configured %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "View panel" %}</a>
+      {% else %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "Configure" %}</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# ------------------------------------------------------------------ #}
+{# Footer — More panels / Build your own / Framework                   #}
+{# ------------------------------------------------------------------ #}
+<div class="dcr-split-card dcr-mt-lg">
+
+  <div class="dcr-split-card__section">
+    <div class="dcr-panel-card__icon-wrap dcr-panel-card__icon-wrap--info">
+      <svg class="dcr-panel-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </div>
+    <h3 class="dcr-split-card__title">{% trans "More panels on the way" %}</h3>
+    <p class="dcr-split-card__desc">{% trans "We're building more tools to bring full observability to your Django admin. Follow our progress on GitHub." %}</p>
+    <div class="dcr-split-card__footer">
+      <a href="https://github.com/yassi/dj-control-room" class="dcr-panel-card__link" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        {% trans "GitHub" %}
+      </a>
+    </div>
+  </div>
+
+  <div class="dcr-split-card__section">
+    <div class="dcr-panel-card__icon-wrap dcr-panel-card__icon-wrap--indigo">
+      <svg class="dcr-panel-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+      </svg>
+    </div>
+    <h3 class="dcr-split-card__title">{% trans "Build your own panel" %}</h3>
+    <p class="dcr-split-card__desc">{% trans "Django Control Room is built to be extended. Use our cookiecutter template to scaffold a fully structured panel plugin in seconds." %}</p>
+    <div class="dcr-split-card__footer">
+      <a href="https://github.com/yassi/cookiecutter-django-admin-panel" class="dcr-panel-card__link" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        {% trans "cookiecutter-django-admin-panel" %}
+      </a>
+    </div>
+  </div>
+
+</div>
+
+{% if core_panel %}
+<div class="dcr-split-card dcr-mt-sm">
+  <div class="dcr-split-card__section dcr-flex-row dcr-items-center dcr-gap-sm">
+    <span class="dcr-text-xs dcr-text-muted dcr-text-uppercase dcr-font-semibold" style="letter-spacing:.05em">{% trans "Framework" %}</span>
+    <span class="dcr-text-sm dcr-font-semibold">{{ core_panel.name }}</span>
+    <span class="dcr-text-muted">—</span>
+    <span class="dcr-text-sm dcr-text-muted">{{ core_panel.description }}</span>
+    {% if core_panel.configured %}
+    <a href="{{ core_panel.url }}" class="dcr-panel-card__link dcr-ml-auto">{% trans "Design system" %} →</a>
+    {% elif core_panel.docs_url %}
+    <a href="{{ core_panel.docs_url }}" class="dcr-panel-card__link dcr-ml-auto" target="_blank" rel="noopener noreferrer">{% trans "Docs" %} ↗</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
+
+</div>
