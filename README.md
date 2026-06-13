@@ -81,12 +81,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
+    # Required: shared core library (template tags + design system)
+    'dj_control_room_base',
+
     # Add any panels you installed
     'dj_redis_panel',
     'dj_cache_panel',
     'dj_urls_panel',
-    
+
     # Then add Django Control Room
     'dj_control_room',
     # Your apps

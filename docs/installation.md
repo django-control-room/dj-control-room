@@ -51,7 +51,7 @@ pip install dj-control-room[all]
 
 ### 1. Add to INSTALLED_APPS
 
-Add your panel apps first, then `dj_control_room` (so all panels appear under one "DJ Control Room" section in the admin sidebar):
+Add `dj_control_room_base` (the shared core library), your panel apps, then `dj_control_room` (so all panels appear under one "DJ Control Room" section in the admin sidebar):
 
 ```python
 # settings.py
@@ -63,22 +63,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
+    # Required: shared core library (provides dcr_icons template tags and design system)
+    'dj_control_room_base',
+
     # Panels (add the ones you installed)
     'dj_redis_panel',   # If you installed [redis]
     'dj_cache_panel',   # If you installed [cache]
     'dj_urls_panel',    # If you installed [urls]
     'dj_celery_panel',  # If you installed [celery]
     'dj_signals_panel', # If you installed [signals]
-    
+
     # Django Control Room (list after panels so they appear in one section)
     'dj_control_room',
-    
+
     # Your apps
     'myapp',
     # ...
 ]
 ```
+
+> **Note:** `dj_control_room_base` is installed automatically as a dependency of `dj-control-room`, but it **must** also be listed in `INSTALLED_APPS` so Django can discover its template tag library (`dcr_icons`) and static assets. If you forget it, you will see a `'dcr_icons' is not a registered tag library` error and Django's system check will report `dj_control_room.E001`.
 
 > **Note:** Panels are automatically discovered via entry points, so Django Control Room will detect them even if you install them separately.
 
@@ -173,6 +178,12 @@ If panels don't appear in the dashboard:
    ```bash
    pip list | grep dj-
    ```
+
+### `'dcr_icons' is not a registered tag library`
+
+This error means `dj_control_room_base` is not in `INSTALLED_APPS`. Django only discovers template tag libraries from installed apps. Fix it by adding `'dj_control_room_base'` to `INSTALLED_APPS` as shown in the configuration step above.
+
+Running `python manage.py check` will also report this as `dj_control_room.E001` with a descriptive hint.
 
 ### URL Resolution Errors
 
