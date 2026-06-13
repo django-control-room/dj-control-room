@@ -14,7 +14,7 @@ from dj_control_room_base.core import BasePanelAdmin
 
 from .registry import registry
 from .utils import should_register_panel_admin
-from .featured_panels import get_featured_panel_ids
+from .featured_panels import get_featured_panel_ids, FRAMEWORK_PANEL_IDS
 
 logger = logging.getLogger(__name__)
 
@@ -75,9 +75,19 @@ def _register_panel_admin(panel):
     """
     Register a single panel in the admin.
 
+    Framework panels (those listed in FRAMEWORK_PANEL_IDS) are skipped because
+    their URL namespaces are not required to be mounted by the consuming project,
+    and they have no end-user view to navigate to from the sidebar.
+
     Args:
         panel: The panel instance to register
     """
+    if panel._registry_id in FRAMEWORK_PANEL_IDS:
+        logger.debug(
+            f"Skipping admin registration for framework panel '{panel._registry_id}'"
+        )
+        return
+
     # Create a safe model name from the registry ID
     model_name = (
         f"{panel._registry_id.replace('-', '').replace('_', '').title()}PanelProxy"

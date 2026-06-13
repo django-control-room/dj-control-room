@@ -5,6 +5,14 @@ These panels are always shown in the dashboard, even if not installed.
 If not installed, they show a marketing page with installation instructions.
 """
 
+# Panel IDs that provide framework infrastructure rather than end-user views.
+# These are discovered via entry points but must NOT receive an admin sidebar
+# entry because their URL namespaces are not required to be mounted by the
+# consuming project. Only hub maintainers control this list — panel authors
+# cannot opt themselves in by declaring any attribute on their panel class.
+FRAMEWORK_PANEL_IDS: frozenset = frozenset({"dj_control_room_base"})
+
+
 FEATURED_PANELS = [
     {
         "id": "dj_redis_panel",
