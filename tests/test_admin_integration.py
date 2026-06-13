@@ -53,12 +53,13 @@ class TestRegisterPanelAdminFrameworkSkip(TestCase):
     def test_regular_panel_is_registered_in_admin(self):
         """_register_panel_admin must register models for non-framework panels."""
         panel = _make_panel("dj_test_panel_unique_xyz")
-        before = len(admin.site._registry)
+        before = set(admin.site._registry.keys())
 
         _register_panel_admin(panel)
 
-        after = len(admin.site._registry)
-        self.assertGreater(after, before, "A regular panel should add an admin model")
+        added = set(admin.site._registry.keys()) - before
+        self.addCleanup(lambda: [admin.site.unregister(m) for m in added])
+        self.assertGreater(len(added), 0, "A regular panel should add an admin model")
 
     def test_all_framework_panel_ids_are_skipped(self):
         """Every ID in FRAMEWORK_PANEL_IDS is skipped, not just dj_control_room_base."""
