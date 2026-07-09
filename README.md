@@ -17,28 +17,26 @@
 
 <h1 align="center">Django Control Room</h1>
 <p align="center">
-  <strong>A centralized dashboard for managing Django admin panels</strong>
+  <strong>A framework for building Django admin tools, with a centralized dashboard to manage them</strong>
 </p>
 
-<p align="center">
-  <a href="https://djangocontrolroom.com">Official Site</a> •
-  <a href="#features">Features</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#panels">Official Panels</a> •
-  <a href="https://yassi.github.io/dj-control-room/">Documentation</a>
-</p>
 
 ---
 
+Django Control Room is a **plugin framework for building Django admin tools** (called "panels"), it's also a suite of official panels for managing all sorts of services like `Redis`, `Celery`, `Caches` and inspecting Django internals like `URLs` and `Signals`. Every panel - official or third-party - is a small, independent Python package built on the same public plugin API/SDK available in [dj-control-room-base](https://github.com/yassi/dj-control-room-base).
+
+Install `dj-control-room` and it discovers every compatible panel via Python entry points, renders it in a centralized dashboard, and gives it a shared design system, permissions model, and admin sidebar integration - all for free.
+
+The [Official Panels](#official-panels) below are reference implementations of that same framework - a starting point, not the whole story. See [Creating Custom Panels](#creating-custom-panels) to build your own.
+
 ## Features
 
-- **Centralized Dashboard** - All your admin panels in one place
-- **Plugin System** - Discover and install panels via PyPI
-- **Beautiful UI** - Modern, responsive design with dark mode support
+- **Plugin Framework** - Build your own admin tools with the core libs in [dj-control-room-base](https://github.com/yassi/dj-control-room-base); your panels behave exactly like the official ones
+- **Centralized Dashboard** - Every installed panel, official or custom, is discovered automatically and displayed in one place
+- **Beautiful UI** - Modern, responsive design with dark mode support, shared across every panel via a common design system
 - **Secure** - Package verification prevents panel hijacking
 - **Easy Integration** - Works seamlessly with Django admin
-- **Official Panels** - Pre-built panels for common tasks
+- **Official Panels** - Pre-built panels for common tasks, built on the same framework available to you
 - **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://yassi.github.io/dj-control-room/configuration/#theme-adapters))
 
 ![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
@@ -167,6 +165,8 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ## Official Panels
 
+These are reference panels built using the same plugin framework described above - a great way to see it in action, and a starting point if you want to build your own.
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png" alt="Official Panels" width="800">
 </div>
@@ -201,25 +201,7 @@ This generates a complete panel structure with Django admin integration, tests, 
 
 ### Manual Panel Creation
 
-You can also create panels manually by implementing a simple interface:
-
-```python
-# my_panel/panel.py
-class MyPanel:
-    name = "My Panel"
-    description = "My awesome panel"
-    icon = "chart"
-```
-
-```toml
-# pyproject.toml
-[project.entry-points."dj_control_room.panels"]
-my_panel = "my_panel.panel:MyPanel"
-```
-
-See our [Creating Panels Doc](docs/creating-panels.md) for full documentation or use 
-our [Build your own panel guide](https://djangocontrolroom.com/guides/create-django-control-room-panel) which uses our
-[cookiecutter template](https://github.com/yassi/cookiecutter-dj-control-room-plugin) to get started quickly.
+Prefer full control over the generated structure? You can build a panel by hand instead of using the cookiecutter template. See our [Creating Panels Doc](docs/creating-panels.md) for the complete guide, or use our [Build your own panel guide](https://djangocontrolroom.com/guides/create-django-control-room-panel), which still uses the [cookiecutter template](https://github.com/yassi/cookiecutter-dj-control-room-plugin) to get started quickly.
 
 ## Security
 

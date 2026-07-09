@@ -4,6 +4,13 @@ Learn how to create custom panels for Django Control Room.
 
 Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 
+Django Control Room is a **framework** for building Django admin tools, not just a fixed collection of them. Every panel - official or third-party - is a small, independent Python package built on the same public plugin API.
+
+!!! note "The panel contract lives in dj-control-room-base"
+    `dj-control-room` (this package) is the **hub**: it discovers panels via entry points, merges them into a centralized dashboard, and renders the admin sidebar. The base classes you actually subclass - `PanelPlugin`, `PanelConfig`, `PanelPlaceholderModel`, `BasePanelAdmin`, and panel tools - are provided by the companion **[dj-control-room-base](https://github.com/yassi/dj-control-room-base)** library, which every panel depends on regardless of whether `dj-control-room` itself is installed.
+
+    This page focuses on how a panel plugs into the `dj-control-room` hub specifically. For the complete, up-to-date reference on the panel contract itself (settings, CSS, permissions, admin integration, and panel tools for AI/MCP), see dj-control-room-base's **[Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/)**.
+
 ## Cookiecutter Template (Recommended)
 
 The fastest way to create a new panel is using our official cookiecutter template:
@@ -33,7 +40,7 @@ The template will prompt you for project details and generate everything you nee
 
 ## Quick Start (Manual Setup)
 
-A panel is a Python package that implements a simple interface. Your panel will appear in the Control Room dashboard alongside official panels:
+A panel is a Python package that subclasses `PanelPlugin` (from `dj-control-room-base`) and registers itself via an entry point. Your panel will appear in the Control Room dashboard alongside official panels:
 
 ![Panel Grid](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png)
 
@@ -41,7 +48,9 @@ Here's the minimum you need:
 
 ```python
 # my_panel/panel.py
-class MyPanel:
+from dj_control_room_base.core import PanelPlugin
+
+class MyPanel(PanelPlugin):
     name = "My Panel"
     description = "My awesome panel for monitoring X"
     icon = "chart"
@@ -55,7 +64,11 @@ my_panel = "my_panel.panel:MyPanel"
 
 That's it! Your panel will be automatically discovered by Django Control Room.
 
+> **Note:** A plain class with the same attributes (no `PanelPlugin` base) still works for backward compatibility - the hub only checks for `name`, `description`, and `icon` via duck typing. `PanelPlugin` is recommended for all new panels: it documents the full contract in code, gives you a `validate()` helper for tests, and is what every official panel uses.
+
 ## Panel Interface
+
+Panels should subclass `PanelPlugin` from `dj_control_room_base.core`. The essentials are summarized below; see dj-control-room-base's [`PanelPlugin` reference](https://yassi.github.io/dj-control-room-base/building-panels/#panelplugin-reference) for the exhaustive attribute/method list.
 
 ### How the Registry ID Works
 
@@ -128,6 +141,25 @@ docs_url = "https://github.com/yourname/my-panel"
 pypi_url = "https://pypi.org/project/my-panel/"
 ```
 
+#### `icon_color` (str)
+
+Color variant for the icon wrap. One of `accent`, `success`, `warning`, `danger`, `info`, `indigo`, `purple`, `muted` (default), or their `-solid` variants (e.g. `success-solid`). Set to `""` for a plain wrap with no background tint - useful when `icon` is a full-colour logo image rather than a built-in icon key.
+
+```python
+icon_color = "indigo"
+```
+
+#### `features` (list[str])
+
+Short, one-line capability statements shown on the panel's install/configure page below the description. Leave empty (the default) to omit the features section entirely.
+
+```python
+features = [
+    "Browse and search Redis keys",
+    "Inspect memory usage per key",
+]
+```
+
 ### Optional Methods
 
 #### `get_url_name()`
@@ -149,7 +181,8 @@ Here's a complete panel package structure:
 my-panel/
 ├── my_panel/
 │   ├── __init__.py
-│   ├── panel.py          # Panel class
+│   ├── panel.py          # Panel class (PanelPlugin subclass)
+│   ├── conf.py           # PanelConfig instance (settings, CSS, permissions)
 │   ├── apps.py           # Django app config
 │   ├── models.py         # Placeholder model for admin
 │   ├── admin.py          # Admin registration
@@ -183,9 +216,13 @@ Or manually create the structure shown above.
 
 ### 2. Define Panel Class
 
+Subclass `PanelPlugin` from `dj-control-room-base`. This is how your package introduces itself to the hub:
+
 ```python
 # my_panel/panel.py
-class MyPanel:
+from dj_control_room_base.core import PanelPlugin
+
+class MyPanel(PanelPlugin):
     """
     My awesome panel for Django Control Room.
     """
@@ -201,12 +238,36 @@ class MyPanel:
     # Optional: enables the install/configure page
     # package = "my-panel"
 
+    def get_config(self):
+        # Local import so conf.py isn't pulled in during entry-point discovery
+        from .conf import panel_config
+        return panel_config
+
     # Optional: customize URL name (defaults to "index")
     def get_url_name(self):
         return "index"
 ```
 
-### 3. Create Django App Config
+### 3. Create `conf.py`
+
+Instantiate a `PanelConfig` (also from `dj-control-room-base`). This one object is the single source of truth for your panel's settings, CSS injection, and permission logic — every view and admin entry below reads from it:
+
+```python
+# my_panel/conf.py
+from dj_control_room_base.core import PanelConfig
+
+panel_config = PanelConfig(
+    settings_key="MY_PANEL_SETTINGS",
+    defaults={
+        "LOAD_DEFAULT_CSS": True,
+        "EXTRA_CSS": [],
+    },
+)
+```
+
+This step is optional in principle - the hub only requires `PanelPlugin` - but skipping it means writing your own settings, CSS, and permission handling from scratch. Every official panel uses `PanelConfig`. See dj-control-room-base's [Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/) for the full settings/permissions/tools reference.
+
+### 4. Create Django App Config
 
 ```python
 # my_panel/apps.py
@@ -218,7 +279,7 @@ class MyPanelConfig(AppConfig):
     verbose_name = 'My Panel'
 ```
 
-### 4. Define URL Patterns
+### 5. Define URL Patterns
 
 ```python
 # my_panel/urls.py
@@ -235,60 +296,39 @@ urlpatterns = [
 
 > **Important:** `app_name` in your `urls.py` must match the `app_name` on your panel class (which defaults to the normalized PyPI distribution name). For a package named `my-panel`, both should be `my_panel`.
 
-### 5. Create Views
+### 6. Create Views
+
+Use `panel_config.get_context()` and `@panel_config.permission_required()` so your views pick up the settings/CSS/permission wiring from step 3 automatically:
 
 ```python
 # my_panel/views.py
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from django.contrib import admin
+from .conf import panel_config
 
-@staff_member_required
+@panel_config.permission_required("index")
 def index(request):
     """Main panel view."""
-    context = admin.site.each_context(request)
-    context.update({
-        'title': 'My Panel',
-        # Your data here
-    })
+    context = panel_config.get_context(request, title="My Panel")
+    # Your data here
     return render(request, 'admin/my_panel/index.html', context)
 ```
 
-### 6. Create Templates
+> **Skipping `conf.py`?** Fall back to `@staff_member_required` and `admin.site.each_context(request)` for a plain, dependency-free view - you lose per-scope permissions and CSS injection, but it still works.
 
-```django
-{# my_panel/templates/admin/my_panel/base.html #}
-{% extends "admin/base_site.html" %}
-{% load i18n admin_urls static %}
+### 7. Create Templates
 
-{% block title %}{{ title }} | My Panel{% endblock %}
-
-{% block extrahead %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'my_panel/css/styles.css' %}">
-{% endblock %}
-
-{% block branding %}
-<h1 id="site-name">
-  <a href="{% url 'my_panel:index' %}">My Panel</a>
-</h1>
-{% endblock %}
-
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-  &rsaquo; My Panel
-</div>
-{% endblock %}
-
-{% block content %}{% endblock %}
-```
+Extend `dj_control_room_base/panel_base.html` rather than `admin/base_site.html` directly - it inherits the design system CSS wiring (`dj_cr_load_default_css` / `dj_cr_extra_css` from `panel_config.get_context()`) and Django admin chrome for you:
 
 ```django
 {# my_panel/templates/admin/my_panel/index.html #}
-{% extends "admin/my_panel/base.html" %}
+{% extends "dj_control_room_base/panel_base.html" %}
+
+{% block title %}{{ title }} | My Panel{% endblock %}
 
 {% block content %}
+<div class="dcr-page-header">
+  <h1 class="dcr-page-header__title">My Panel</h1>
+</div>
 <div class="module">
     <h2>My Panel Dashboard</h2>
     <p>Your content here</p>
@@ -296,7 +336,9 @@ def index(request):
 {% endblock %}
 ```
 
-### 7. Add Entry Point
+> **Not using `PanelConfig`?** You can still extend `admin/base_site.html` directly and wire up the `title`/`branding`/`breadcrumbs` blocks by hand - see the classic-admin pattern in older panel versions for reference.
+
+### 8. Add Entry Point
 
 ```toml
 # pyproject.toml
@@ -304,43 +346,36 @@ def index(request):
 my_panel = "my_panel.panel:MyPanel"
 ```
 
-### 8. Create Placeholder Model
+### 9. Create Placeholder Model
+
+Use `PanelPlaceholderModel` and `BasePanelAdmin` (both from `dj-control-room-base`) to register a Django admin sidebar entry with no database table:
 
 ```python
 # my_panel/models.py
-from django.db import models
+from dj_control_room_base.core import PanelPlaceholderModel
 
-class MyPanelPlaceholder(models.Model):
+class MyPanelPlaceholder(PanelPlaceholderModel):
     """Placeholder model for admin integration."""
-    
-    class Meta:
-        managed = False
+
+    class Meta(PanelPlaceholderModel.Meta):
         verbose_name = "My Panel"
         verbose_name_plural = "My Panel"
-        app_label = "my_panel"
 ```
 
 ```python
 # my_panel/admin.py
 from django.contrib import admin
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from dj_control_room_base.core import BasePanelAdmin
+from .conf import panel_config
 from .models import MyPanelPlaceholder
 
 @admin.register(MyPanelPlaceholder)
-class MyPanelAdmin(admin.ModelAdmin):
-    def changelist_view(self, request, extra_context=None):
-        return HttpResponseRedirect(reverse('my_panel:index'))
-    
-    def has_add_permission(self, request):
-        return False
-    
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_staff
-    
-    def has_delete_permission(self, request, obj=None):
-        return False
+class MyPanelAdmin(BasePanelAdmin):
+    redirect_url_name = "my_panel:index"
+    panel_config = panel_config
 ```
+
+Attaching `panel_config` means the sidebar entry respects the same permission rules configured on your panel's settings, instead of the default staff-only check.
 
 > **Note:** Django Control Room will automatically unregister this placeholder model and replace it with its own proxy model under the "Django Control Room" section (unless configured otherwise).
 
@@ -411,31 +446,33 @@ twine upload dist/*
 
 ## Best Practices
 
-### 1. Use Admin Context
+### 1. Use `PanelConfig` for Context and Permissions
 
-Always include Django admin context for proper styling and navigation:
+Prefer `panel_config.get_context(request, ...)` and `@panel_config.permission_required(scope)` (step 6 above) over wiring these up by hand - they stay in sync with your settings automatically and every official panel uses them:
 
 ```python
-context = admin.site.each_context(request)
-context.update({
-    'title': 'Your Title',
+from .conf import panel_config
+
+@panel_config.permission_required("index")
+def my_view(request):
+    context = panel_config.get_context(request, title="Your Title")
     # Your data
-})
 ```
 
-### 2. Require Staff Permission
-
-Protect your views with the staff member decorator:
+If you're not using `PanelConfig`, always include Django admin context and require staff manually instead:
 
 ```python
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import admin
 
 @staff_member_required
 def my_view(request):
+    context = admin.site.each_context(request)
+    context.update({'title': 'Your Title'})
     # ...
 ```
 
-### 3. Follow Django Admin Styling
+### 2. Follow Django Admin Styling
 
 Extend Django admin templates and use admin CSS classes for consistency:
 
@@ -450,7 +487,7 @@ Extend Django admin templates and use admin CSS classes for consistency:
 </div>
 ```
 
-### 4. Handle Errors Gracefully
+### 3. Handle Errors Gracefully
 
 Provide helpful error messages:
 
@@ -462,7 +499,7 @@ except Exception as e:
     data = []
 ```
 
-### 5. Document Your Panel
+### 4. Document Your Panel
 
 Include comprehensive README with:
 - Installation instructions
@@ -521,6 +558,11 @@ class PanelTestCase(TestCase):
     def test_url_name(self):
         panel = MyPanel()
         self.assertEqual(panel.get_url_name(), 'index')
+
+    def test_validate_passes(self):
+        # PanelPlugin.validate() raises ValueError if a required attribute
+        # (name/description/icon) is missing or empty - a quick sanity check.
+        MyPanel().validate()
 ```
 
 ## Examples
@@ -530,6 +572,7 @@ Check out these official panels for reference:
 - [dj-redis-panel](https://github.com/yassi/dj-redis-panel) - Redis monitoring
 - [dj-cache-panel](https://github.com/yassi/dj-cache-panel) - Cache inspection
 - [dj-urls-panel](https://github.com/yassi/dj-urls-panel) - URL browsing
+- [dj-signals-panel](https://github.com/yassi/dj-signals-panel) - Django signals/receivers inspection
 
 ## Getting Help
 
@@ -541,8 +584,10 @@ Check out these official panels for reference:
 
 - **[Cookiecutter Template](https://github.com/yassi/cookiecutter-dj-control-room-plugin)** - Official panel template generator
 - **[djangocontrolroom.com](https://djangocontrolroom.com)** - Tutorials and examples
+- **[dj-control-room-base: Building Panels](https://yassi.github.io/dj-control-room-base/building-panels/)** - The authoritative reference for `PanelPlugin`, `PanelConfig`, admin integration, and panel tools
 
 ## Next Steps
 
 - [Configuration](configuration.md) - Learn about available settings
 - [API Reference](api-reference.md) - Detailed API documentation
+- [dj-control-room-base Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/) - Full panel contract reference (settings, CSS, permissions, panel tools)
