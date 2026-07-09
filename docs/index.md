@@ -96,6 +96,12 @@ pip install dj-control-room[redis,cache,urls,celery]
 
 Modern, responsive design that looks great in both light and dark mode.
 
+### django-unfold Theme
+
+When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+
+![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot-unfold.png)
+
 ### Secure by Default
 
 - Staff-only access

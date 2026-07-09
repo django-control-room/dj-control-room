@@ -39,8 +39,21 @@
 - **Secure** - Package verification prevents panel hijacking
 - **Easy Integration** - Works seamlessly with Django admin
 - **Official Panels** - Pre-built panels for common tasks
+- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://yassi.github.io/dj-control-room/configuration/#theme-adapters))
 
 ![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
+
+### django-unfold Theme
+
+When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://yassi.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+
+```python
+DJ_CONTROL_ROOM_SETTINGS = {
+    'EXTRA_CSS': ['dj_control_room_base/css/themes/unfold.css'],
+}
+```
+
+![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot-unfold.png)
 
 ## Installation
 
