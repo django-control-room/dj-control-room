@@ -15,7 +15,7 @@ Django Control Room is a **framework** for building Django admin tools, not just
 
 The fastest way to create a new panel is using our official cookiecutter template:
 
-**[cookiecutter-dj-control-room-plugin](https://github.com/yassi/cookiecutter-dj-control-room-plugin)**
+**[cookiecutter-dj-control-room-plugin](https://github.com/django-control-room/cookiecutter-dj-control-room-plugin)**
 
 You can find a guide for creating your very first admin panel using this tempalte at:
 - https://djangocontrolroom.com/guides/create-django-control-room-panel
@@ -33,7 +33,7 @@ This template generates a complete, production-ready panel structure with:
 
 ```bash
 pip install cookiecutter  # requires cookiecutter>=2.0.0
-cookiecutter https://github.com/yassi/cookiecutter-dj-control-room-plugin
+cookiecutter https://github.com/django-control-room/cookiecutter-dj-control-room-plugin
 ```
 
 The template will prompt you for project details and generate everything you need to start building your panel immediately.
@@ -206,10 +206,10 @@ my-panel/
 
 ### 1. Create Package Structure
 
-Use the [cookiecutter template](https://github.com/yassi/cookiecutter-dj-control-room-plugin):
+Use the [cookiecutter template](https://github.com/django-control-room/cookiecutter-dj-control-room-plugin):
 
 ```bash
-cookiecutter https://github.com/yassi/cookiecutter-dj-control-room-plugin
+cookiecutter https://github.com/django-control-room/cookiecutter-dj-control-room-plugin
 ```
 
 Or manually create the structure shown above.
@@ -582,7 +582,7 @@ Check out these official panels for reference:
 
 ## Resources
 
-- **[Cookiecutter Template](https://github.com/yassi/cookiecutter-dj-control-room-plugin)** - Official panel template generator
+- **[Cookiecutter Template](https://github.com/django-control-room/cookiecutter-dj-control-room-plugin)** - Official panel template generator
 - **[djangocontrolroom.com](https://djangocontrolroom.com)** - Tutorials and examples
 - **[dj-control-room-base: Building Panels](https://django-control-room.github.io/dj-control-room-base/building-panels/)** - The authoritative reference for `PanelPlugin`, `PanelConfig`, admin integration, and panel tools
 

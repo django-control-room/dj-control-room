@@ -195,14 +195,14 @@ The fastest way to create a new panel is using our official cookiecutter templat
 
 ```bash
 pip install cookiecutter
-cookiecutter https://github.com/yassi/cookiecutter-dj-control-room-plugin
+cookiecutter https://github.com/django-control-room/cookiecutter-dj-control-room-plugin
 ```
 
 This generates a complete panel structure with Django admin integration, tests, documentation, and Docker setup.
 
 ### Manual Panel Creation
 
-Prefer full control over the generated structure? You can build a panel by hand instead of using the cookiecutter template. See our [Creating Panels Doc](docs/creating-panels.md) for the complete guide, or use our [Build your own panel guide](https://djangocontrolroom.com/guides/create-django-control-room-panel), which still uses the [cookiecutter template](https://github.com/yassi/cookiecutter-dj-control-room-plugin) to get started quickly.
+Prefer full control over the generated structure? You can build a panel by hand instead of using the cookiecutter template. See our [Creating Panels Doc](docs/creating-panels.md) for the complete guide, or use our [Build your own panel guide](https://djangocontrolroom.com/guides/create-django-control-room-panel), which still uses the [cookiecutter template](https://github.com/django-control-room/cookiecutter-dj-control-room-plugin) to get started quickly.
 
 ## Security
 
