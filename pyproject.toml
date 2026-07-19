@@ -69,10 +69,10 @@ build = [
 ]
 
 [project.urls]
-Homepage = "https://yassi.github.io/dj-control-room/"
-Documentation = "https://yassi.github.io/dj-control-room/"
-Repository = "https://github.com/yassi/dj-control-room"
-"Bug Tracker" = "https://github.com/yassi/dj-control-room/issues"
+Homepage = "https://django-control-room.github.io/dj-control-room/"
+Documentation = "https://django-control-room.github.io/dj-control-room/"
+Repository = "https://github.com/django-control-room/dj-control-room"
+"Bug Tracker" = "https://github.com/django-control-room/dj-control-room/issues"
 
 [tool.setuptools]
 include-package-data = true

@@ -13,7 +13,7 @@ Contributing to Django Control Room or setting up for local development.
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yassi/dj-control-room.git
+git clone https://github.com/django-control-room/dj-control-room.git
 cd dj-control-room
 ```
 

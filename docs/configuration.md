@@ -4,7 +4,7 @@ Django Control Room offers flexible configuration options to customize its behav
 
 Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 
-![Control Room Features](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png)
+![Control Room Features](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
 
 ## Settings Overview
 
@@ -69,17 +69,17 @@ Currently available:
 |---|---|
 | `themes/unfold.css` | Projects using [django-unfold](https://github.com/unfoldadmin/django-unfold) as their admin skin. |
 
-`themes/unfold.css` remaps Django Control Room's accent/surface/border/muted tokens to Unfold's own CSS variables, so the dashboard matches the host site's configured brand color instead of the classic-admin blue.
+`themes/unfold.css` remaps Django Control Room's accent/surface/border/muted tokens to Unfold's own CSS variables, so the dashboard matches the host site's configured brand color instead of the classic-admin blue. `themes/jazzmin.css` does the same for Jazzmin's Bootstrap 5 / Bootswatch variables (`--bs-primary`, `--bs-body-*`, `--bs-border-color`).
 
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot-unfold.png)
+![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
-See the [dj-control-room-base configuration docs](https://yassi.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
+See the [dj-control-room-base configuration docs](https://django-control-room.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
 
 ## Admin Sidebar Behavior
 
 By default, all installed panels appear **only** in the Django Control Room section of the admin sidebar:
 
-<img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
+<img src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
 
 You can change this behavior to show panels in multiple sections.
 

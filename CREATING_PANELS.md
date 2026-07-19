@@ -396,6 +396,6 @@ Reference these open-source panels:
 
 ## Need Help?
 
-- Check the [main documentation](https://github.com/yassi/dj-control-room)
+- Check the [main documentation](https://github.com/django-control-room/dj-control-room)
 - Open an issue for questions
 - Submit PRs to improve this guide

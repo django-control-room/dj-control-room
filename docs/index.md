@@ -2,9 +2,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-light.png">
-    <img alt="Django Control Room" src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-light.png">
+    <img alt="Django Control Room" src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-light.png">
   </picture>
 </p>
 
@@ -51,7 +51,7 @@ urlpatterns = [
 
 Visit: `http://localhost:8000/admin/dj-control-room/`
 
-![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
+![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
 ## Documentation
 
@@ -70,11 +70,11 @@ Visit: `http://localhost:8000/admin/dj-control-room/`
 
 Official panel documentation:
 
-- [Redis Panel](https://github.com/yassi/dj-redis-panel) - Redis monitoring and key inspection
-- [Cache Panel](https://github.com/yassi/dj-cache-panel) - Django cache backend inspection
-- [Celery Panel](https://github.com/yassi/dj-celery-panel) - Django celery monitoring
-- [URLs Panel](https://github.com/yassi/dj-urls-panel) - URL pattern browsing and testing
-- [Signals Panel](https://github.com/yassi/dj-signals-panel) - Django Signals/Receivers inspection
+- [Redis Panel](https://github.com/django-control-room/dj-redis-panel) - Redis monitoring and key inspection
+- [Cache Panel](https://github.com/django-control-room/dj-cache-panel) - Django cache backend inspection
+- [Celery Panel](https://github.com/django-control-room/dj-celery-panel) - Django celery monitoring
+- [URLs Panel](https://github.com/django-control-room/dj-urls-panel) - URL pattern browsing and testing
+- [Signals Panel](https://github.com/django-control-room/dj-signals-panel) - Django Signals/Receivers inspection
 
 ## Features
 
@@ -82,7 +82,7 @@ Official panel documentation:
 
 All your admin panels in one unified dashboard. No more hunting through the admin sidebar.
 
-![Panel Grid](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png)
+![Panel Grid](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
 
 ### Plugin System
 
@@ -100,7 +100,11 @@ Modern, responsive design that looks great in both light and dark mode.
 
 When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
 
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot-unfold.png)
+![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
+
+### django-jazzmin Theme
+
+When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
 
 ### Secure by Default
 
@@ -162,9 +166,9 @@ Django Control Room automatically:
 Need help? Here's how to get support:
 
 - **[Official Site](https://djangocontrolroom.com)** - Guides, tutorials, and examples
-- **[GitHub Discussions](https://github.com/yassi/dj-control-room/discussions)** - Ask questions
-- **[Issue Tracker](https://github.com/yassi/dj-control-room/issues)** - Report bugs
-- **[GitHub Repository](https://github.com/yassi/dj-control-room)** - View source code
+- **[GitHub Discussions](https://github.com/django-control-room/dj-control-room/discussions)** - Ask questions
+- **[Issue Tracker](https://github.com/django-control-room/dj-control-room/issues)** - Report bugs
+- **[GitHub Repository](https://github.com/django-control-room/dj-control-room)** - View source code
 
 ## Contributing
 

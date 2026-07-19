@@ -7,9 +7,9 @@ Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 Django Control Room is a **framework** for building Django admin tools, not just a fixed collection of them. Every panel - official or third-party - is a small, independent Python package built on the same public plugin API.
 
 !!! note "The panel contract lives in dj-control-room-base"
-    `dj-control-room` (this package) is the **hub**: it discovers panels via entry points, merges them into a centralized dashboard, and renders the admin sidebar. The base classes you actually subclass - `PanelPlugin`, `PanelConfig`, `PanelPlaceholderModel`, `BasePanelAdmin`, and panel tools - are provided by the companion **[dj-control-room-base](https://github.com/yassi/dj-control-room-base)** library, which every panel depends on regardless of whether `dj-control-room` itself is installed.
+    `dj-control-room` (this package) is the **hub**: it discovers panels via entry points, merges them into a centralized dashboard, and renders the admin sidebar. The base classes you actually subclass - `PanelPlugin`, `PanelConfig`, `PanelPlaceholderModel`, `BasePanelAdmin`, and panel tools - are provided by the companion **[dj-control-room-base](https://github.com/django-control-room/dj-control-room-base)** library, which every panel depends on regardless of whether `dj-control-room` itself is installed.
 
-    This page focuses on how a panel plugs into the `dj-control-room` hub specifically. For the complete, up-to-date reference on the panel contract itself (settings, CSS, permissions, admin integration, and panel tools for AI/MCP), see dj-control-room-base's **[Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/)**.
+    This page focuses on how a panel plugs into the `dj-control-room` hub specifically. For the complete, up-to-date reference on the panel contract itself (settings, CSS, permissions, admin integration, and panel tools for AI/MCP), see dj-control-room-base's **[Building Panels guide](https://django-control-room.github.io/dj-control-room-base/building-panels/)**.
 
 ## Cookiecutter Template (Recommended)
 
@@ -42,7 +42,7 @@ The template will prompt you for project details and generate everything you nee
 
 A panel is a Python package that subclasses `PanelPlugin` (from `dj-control-room-base`) and registers itself via an entry point. Your panel will appear in the Control Room dashboard alongside official panels:
 
-![Panel Grid](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png)
+![Panel Grid](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
 
 Here's the minimum you need:
 
@@ -68,7 +68,7 @@ That's it! Your panel will be automatically discovered by Django Control Room.
 
 ## Panel Interface
 
-Panels should subclass `PanelPlugin` from `dj_control_room_base.core`. The essentials are summarized below; see dj-control-room-base's [`PanelPlugin` reference](https://yassi.github.io/dj-control-room-base/building-panels/#panelplugin-reference) for the exhaustive attribute/method list.
+Panels should subclass `PanelPlugin` from `dj_control_room_base.core`. The essentials are summarized below; see dj-control-room-base's [`PanelPlugin` reference](https://django-control-room.github.io/dj-control-room-base/building-panels/#panelplugin-reference) for the exhaustive attribute/method list.
 
 ### How the Registry ID Works
 
@@ -265,7 +265,7 @@ panel_config = PanelConfig(
 )
 ```
 
-This step is optional in principle - the hub only requires `PanelPlugin` - but skipping it means writing your own settings, CSS, and permission handling from scratch. Every official panel uses `PanelConfig`. See dj-control-room-base's [Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/) for the full settings/permissions/tools reference.
+This step is optional in principle - the hub only requires `PanelPlugin` - but skipping it means writing your own settings, CSS, and permission handling from scratch. Every official panel uses `PanelConfig`. See dj-control-room-base's [Building Panels guide](https://django-control-room.github.io/dj-control-room-base/building-panels/) for the full settings/permissions/tools reference.
 
 ### 4. Create Django App Config
 
@@ -381,7 +381,7 @@ Attaching `panel_config` means the sidebar entry respects the same permission ru
 
 Once your panel is installed and configured, it will appear in the admin sidebar under Django Control Room:
 
-<img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
+<img src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
 
 ## Publishing Your Panel
 
@@ -569,25 +569,25 @@ class PanelTestCase(TestCase):
 
 Check out these official panels for reference:
 
-- [dj-redis-panel](https://github.com/yassi/dj-redis-panel) - Redis monitoring
-- [dj-cache-panel](https://github.com/yassi/dj-cache-panel) - Cache inspection
-- [dj-urls-panel](https://github.com/yassi/dj-urls-panel) - URL browsing
-- [dj-signals-panel](https://github.com/yassi/dj-signals-panel) - Django signals/receivers inspection
+- [dj-redis-panel](https://github.com/django-control-room/dj-redis-panel) - Redis monitoring
+- [dj-cache-panel](https://github.com/django-control-room/dj-cache-panel) - Cache inspection
+- [dj-urls-panel](https://github.com/django-control-room/dj-urls-panel) - URL browsing
+- [dj-signals-panel](https://github.com/django-control-room/dj-signals-panel) - Django signals/receivers inspection
 
 ## Getting Help
 
-- [GitHub Discussions](https://github.com/yassi/dj-control-room/discussions)
-- [Issue Tracker](https://github.com/yassi/dj-control-room/issues)
-- [Example Panels](https://github.com/yassi/dj-control-room/tree/main/example_project/example_project/example_panels.py)
+- [GitHub Discussions](https://github.com/django-control-room/dj-control-room/discussions)
+- [Issue Tracker](https://github.com/django-control-room/dj-control-room/issues)
+- [Example Panels](https://github.com/django-control-room/dj-control-room/tree/main/example_project/example_project/example_panels.py)
 
 ## Resources
 
 - **[Cookiecutter Template](https://github.com/yassi/cookiecutter-dj-control-room-plugin)** - Official panel template generator
 - **[djangocontrolroom.com](https://djangocontrolroom.com)** - Tutorials and examples
-- **[dj-control-room-base: Building Panels](https://yassi.github.io/dj-control-room-base/building-panels/)** - The authoritative reference for `PanelPlugin`, `PanelConfig`, admin integration, and panel tools
+- **[dj-control-room-base: Building Panels](https://django-control-room.github.io/dj-control-room-base/building-panels/)** - The authoritative reference for `PanelPlugin`, `PanelConfig`, admin integration, and panel tools
 
 ## Next Steps
 
 - [Configuration](configuration.md) - Learn about available settings
 - [API Reference](api-reference.md) - Detailed API documentation
-- [dj-control-room-base Building Panels guide](https://yassi.github.io/dj-control-room-base/building-panels/) - Full panel contract reference (settings, CSS, permissions, panel tools)
+- [dj-control-room-base Building Panels guide](https://django-control-room.github.io/dj-control-room-base/building-panels/) - Full panel contract reference (settings, CSS, permissions, panel tools)

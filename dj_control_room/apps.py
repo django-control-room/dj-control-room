@@ -52,7 +52,7 @@ def _check_base_installed(app_configs, **kwargs):
                     "Add 'dj_control_room_base' to INSTALLED_APPS in your settings. "
                     "dj-control-room requires it for its template tag library (dcr_icons) "
                     "and shared design system. "
-                    "See: https://yassi.github.io/dj-control-room/installation/"
+                    "See: https://django-control-room.github.io/dj-control-room/installation/"
                 ),
                 obj="dj_control_room",
                 id="dj_control_room.E001",

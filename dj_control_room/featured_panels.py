@@ -21,7 +21,7 @@ FEATURED_PANELS = [
         "icon": "database",
         "icon_color": "accent",
         "package": "dj-redis-panel",
-        "docs_url": "https://github.com/yassi/dj-redis-panel",
+        "docs_url": "https://github.com/django-control-room/dj-redis-panel",
         "pypi_url": "https://pypi.org/project/dj-redis-panel/",
         "features": [
             "View connection info and server overview",
@@ -37,7 +37,7 @@ FEATURED_PANELS = [
         "icon": "layers",
         "icon_color": "success",
         "package": "dj-cache-panel",
-        "docs_url": "https://github.com/yassi/dj-cache-panel",
+        "docs_url": "https://github.com/django-control-room/dj-cache-panel",
         "pypi_url": "https://pypi.org/project/dj-cache-panel/",
         "features": [
             "Browse all cached keys and their values",
@@ -53,7 +53,7 @@ FEATURED_PANELS = [
         "icon": "chart",
         "icon_color": "warning",
         "package": "dj-celery-panel",
-        "docs_url": "https://github.com/yassi/dj-celery-panel",
+        "docs_url": "https://github.com/django-control-room/dj-celery-panel",
         "pypi_url": "https://pypi.org/project/dj-celery-panel/",
         "features": [
             "Monitor active workers and their status",
@@ -69,7 +69,7 @@ FEATURED_PANELS = [
         "icon": "link",
         "icon_color": "info",
         "package": "dj-urls-panel",
-        "docs_url": "https://github.com/yassi/dj-urls-panel",
+        "docs_url": "https://github.com/django-control-room/dj-urls-panel",
         "pypi_url": "https://pypi.org/project/dj-urls-panel/",
         "features": [
             "Browse all registered URL patterns",
@@ -85,7 +85,7 @@ FEATURED_PANELS = [
         "icon": "radio",
         "icon_color": "indigo",
         "package": "dj-signals-panel",
-        "docs_url": "https://github.com/yassi/dj-signals-panel",
+        "docs_url": "https://github.com/django-control-room/dj-signals-panel",
         "pypi_url": "https://pypi.org/project/dj-signals-panel/",
         "features": [
             "Browse all registered Django signals",
@@ -102,7 +102,7 @@ FEATURED_PANELS = [
         "icon_color": "danger",
         "coming_soon": True,
         "package": "dj-error-panel",
-        "docs_url": "https://github.com/yassi/dj-error-panel",
+        "docs_url": "https://github.com/django-control-room/dj-error-panel",
         "pypi_url": "https://pypi.org/project/dj-error-panel/",
         "features": [
             "Capture and browse unhandled exceptions",

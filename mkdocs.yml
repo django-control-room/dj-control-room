@@ -1,10 +1,10 @@
 site_name: DJ Control Room
 site_description: The control room for your Django app
 site_author: Yasser Toruno
-site_url: https://yassi.github.io/dj-control-room/
+site_url: https://django-control-room.github.io/dj-control-room/
 
-repo_name: yassi/dj-control-room
-repo_url: https://github.com/yassi/dj-control-room
+repo_name: django-control-room/dj-control-room
+repo_url: https://github.com/django-control-room/dj-control-room
 
 theme:
   name: material

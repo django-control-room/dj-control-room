@@ -4,7 +4,7 @@ Complete API reference for Django Control Room.
 
 Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 
-![Django Control Room](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png)
+![Django Control Room](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
 
 ## Panel Interface
 
@@ -249,7 +249,7 @@ from dj_control_room.featured_panels import FEATURED_PANELS
         "description": "Monitor connections, memory, keys",
         "icon": "database",
         "package": "dj-redis-panel",
-        "docs_url": "https://github.com/yassi/dj-redis-panel",
+        "docs_url": "https://github.com/django-control-room/dj-redis-panel",
         "pypi_url": "https://pypi.org/project/dj-redis-panel/",
         "coming_soon": False,  # Optional
     },
@@ -505,4 +505,4 @@ def get_panel_names() -> List[str]:
 - [Installation Guide](installation.md)
 - [Configuration](configuration.md)
 - [Creating Panels](creating-panels.md)
-- [GitHub Repository](https://github.com/yassi/dj-control-room)
+- [GitHub Repository](https://github.com/django-control-room/dj-control-room)

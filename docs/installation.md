@@ -4,7 +4,7 @@ This guide will walk you through installing Django Control Room and its panels.
 
 Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 
-![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
+![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
 ## Basic Installation
 
@@ -134,7 +134,7 @@ python manage.py collectstatic
 
 Once installed, your admin sidebar will show Django Control Room with all your panels:
 
-<img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
+<img src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
 
 ### Check Panel Discovery
 
@@ -163,7 +163,7 @@ for panel in registry.get_panels():
 
 3. You should see the Control Room dashboard with your installed panels:
 
-![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
+![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
 ## Troubleshooting
 

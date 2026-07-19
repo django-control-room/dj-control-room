@@ -1,5 +1,5 @@
-[![Tests](https://github.com/yassi/dj-control-room/actions/workflows/test.yml/badge.svg)](https://github.com/yassi/dj-control-room/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/yassi/dj-control-room/branch/main/graph/badge.svg)](https://codecov.io/gh/yassi/dj-control-room)
+[![Tests](https://github.com/django-control-room/dj-control-room/actions/workflows/test.yml/badge.svg)](https://github.com/django-control-room/dj-control-room/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/django-control-room/dj-control-room/branch/main/graph/badge.svg)](https://codecov.io/gh/django-control-room/dj-control-room)
 [![PyPI version](https://badge.fury.io/py/dj-control-room.svg)](https://badge.fury.io/py/dj-control-room)
 [![Python versions](https://img.shields.io/pypi/pyversions/dj-control-room.svg)](https://pypi.org/project/dj-control-room/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -9,9 +9,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-light.png">
-    <img alt="Django Control Room" src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/hero-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-light.png">
+    <img alt="Django Control Room" src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/hero-light.png">
   </picture>
 </p>
 
@@ -23,7 +23,7 @@
 
 ---
 
-Django Control Room is a **plugin framework for building Django admin tools** (called "panels"), it's also a suite of official panels for managing all sorts of services like `Redis`, `Celery`, `Caches` and inspecting Django internals like `URLs` and `Signals`. Every panel - official or third-party - is a small, independent Python package built on the same public plugin API/SDK available in [dj-control-room-base](https://github.com/yassi/dj-control-room-base).
+Django Control Room is a **plugin framework for building Django admin tools** (called "panels"), it's also a suite of official panels for managing all sorts of services like `Redis`, `Celery`, `Caches` and inspecting Django internals like `URLs` and `Signals`. Every panel - official or third-party - is a small, independent Python package built on the same public plugin API/SDK available in [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base).
 
 Install `dj-control-room` and it discovers every compatible panel via Python entry points, renders it in a centralized dashboard, and gives it a shared design system, permissions model, and admin sidebar integration - all for free.
 
@@ -31,19 +31,19 @@ The [Official Panels](#official-panels) below are reference implementations of t
 
 ## Features
 
-- **Plugin Framework** - Build your own admin tools with the core libs in [dj-control-room-base](https://github.com/yassi/dj-control-room-base); your panels behave exactly like the official ones
+- **Plugin Framework** - Build your own admin tools with the core libs in [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base); your panels behave exactly like the official ones
 - **Centralized Dashboard** - Every installed panel, official or custom, is discovered automatically and displayed in one place
 - **Beautiful UI** - Modern, responsive design with dark mode support, shared across every panel via a common design system
 - **Secure** - Package verification prevents panel hijacking
 - **Easy Integration** - Works seamlessly with Django admin
 - **Official Panels** - Pre-built panels for common tasks, built on the same framework available to you
-- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://yassi.github.io/dj-control-room/configuration/#theme-adapters))
+- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters))
 
-![Django Control Room Dashboard](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot.png)
+![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
 ### django-unfold Theme
 
-When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://yassi.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
@@ -51,7 +51,8 @@ DJ_CONTROL_ROOM_SETTINGS = {
 }
 ```
 
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-control-room/main/images/full-screenshot-unfold.png)
+![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
+
 
 ## Installation
 
@@ -139,7 +140,7 @@ urlpatterns = [
 
 All installed panels appear in the Django admin sidebar under "Django Control Room":
 
-<img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
+<img src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/sidebar.png" alt="Admin Sidebar" width="300">
 
 ### Control Sidebar Behavior (Optional)
 
@@ -168,7 +169,7 @@ DJ_CONTROL_ROOM_SETTINGS = {
 These are reference panels built using the same plugin framework described above - a great way to see it in action, and a starting point if you want to build your own.
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/yassi/dj-control-room/main/images/grid_image.png" alt="Official Panels" width="800">
+  <img src="https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png" alt="Official Panels" width="800">
 </div>
 
 ### Available Now
@@ -215,7 +216,7 @@ Django Control Room includes built-in security features:
 
 Visit the official site at **[djangocontrolroom.com](https://djangocontrolroom.com)** for guides, tutorials, and examples.
 
-Full documentation: **[https://yassi.github.io/dj-control-room/](https://yassi.github.io/dj-control-room/)**
+Full documentation: **[https://django-control-room.github.io/dj-control-room/](https://django-control-room.github.io/dj-control-room/)**
 
 - [Installation Guide](docs/installation.md)
 - [Configuration](docs/configuration.md)
@@ -243,7 +244,7 @@ Created by [Yasser Toruno](https://github.com/yassi)
 
 <p align="center">
   <a href="https://djangocontrolroom.com">Official Site</a> •
-  <a href="https://github.com/yassi/dj-control-room">Star us on GitHub</a> •
-  <a href="https://github.com/yassi/dj-control-room/issues">Report Bug</a> •
-  <a href="https://github.com/yassi/dj-control-room/issues">Request Feature</a>
+  <a href="https://github.com/django-control-room/dj-control-room">Star us on GitHub</a> •
+  <a href="https://github.com/django-control-room/dj-control-room/issues">Report Bug</a> •
+  <a href="https://github.com/django-control-room/dj-control-room/issues">Request Feature</a>
 </p>
