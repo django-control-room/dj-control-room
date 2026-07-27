@@ -38,6 +38,7 @@ The [Official Panels](#official-panels) below are reference implementations of t
 - **Easy Integration** - Works seamlessly with Django admin
 - **Official Panels** - Pre-built panels for common tasks, built on the same framework available to you
 - **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters))
+- **AI Agent Integration (MCP)** - a single MCP endpoint aggregates every installed panel's tools for AI agents (Cursor, Claude, etc.), so agents only need to configure one server for your whole admin toolset (see [Configuration](https://django-control-room.github.io/dj-control-room/configuration/#ai-agent-integration-mcp))
 
 ![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
@@ -53,88 +54,62 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
+### django-jazzmin Theme
+
+When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
+
+```python
+DJ_CONTROL_ROOM_SETTINGS = {
+    'EXTRA_CSS': ['dj_control_room_base/css/themes/jazzmin.css'],
+}
+```
+
+![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
+
 
 ## Installation
 
-### Basic Installation
-
 ```bash
+# Core only
 pip install dj-control-room
-```
 
-### Install with Official Panels
-
-```bash
-# Install with specific panels
+# With specific official panels
 pip install dj-control-room[redis,cache,urls]
 
-# Or install with all official panels
+# Or with all official panels
 pip install dj-control-room[all]
 ```
 
-**Available panel extras:**
-- `redis` - Redis connection manager and inspector
-- `cache` - Django cache backend inspector
-- `urls` - URL pattern browser and tester
-- `celery` - Celery task monitor
-- `signals` - Django signals/recievers inspection
-- `all` - All official panels
-
-## Quick Start
-
-### 1. Add to INSTALLED_APPS
+Add `dj_control_room_base` (core library), your panels, then `dj_control_room` (so they all appear under one admin section), include the URLs, and migrate:
 
 ```python
-# settings.py
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    # Required: shared core library (template tags + design system)
+    # ...
     'dj_control_room_base',
-
-    # Add any panels you installed
     'dj_redis_panel',
     'dj_cache_panel',
     'dj_urls_panel',
-
-    # Then add Django Control Room
     'dj_control_room',
-    # Your apps
-    # ...
 ]
 ```
 
-### 2. Configure URLs
-
 ```python
-# urls.py
-from django.contrib import admin
-from django.urls import path, include
-
 urlpatterns = [
-    # Panel URLs (include each panel you installed)
     path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
     path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),
     path('admin/dj-urls-panel/', include('dj_urls_panel.urls')),
-    
-    # Control Room dashboard
     path('admin/dj-control-room/', include('dj_control_room.urls')),
-    
-    # Django admin
     path('admin/', admin.site.urls),
 ]
 ```
 
-### 3. Access the Control Room
+```bash
+python manage.py migrate
+```
 
-1. Run migrations: `python manage.py migrate`
-2. Start your server: `python manage.py runserver`
-3. Navigate to `http://localhost:8000/admin/dj-control-room/`
+Then visit `http://localhost:8000/admin/dj-control-room/`.
+
+For the full walkthrough and settings reference (admin sidebar behavior, theme adapters, MCP/AI agent integration), see the [Installation](https://django-control-room.github.io/dj-control-room/installation/) and [Configuration](https://django-control-room.github.io/dj-control-room/configuration/) docs.
 
 ## Admin Sidebar Integration
 
@@ -220,6 +195,7 @@ Full documentation: **[https://django-control-room.github.io/dj-control-room/](h
 
 - [Installation Guide](docs/installation.md)
 - [Configuration](docs/configuration.md)
+- [Scopes](docs/scopes.md)
 - [Creating Panels](docs/creating-panels.md)
 - [API Reference](docs/api-reference.md)
 
@@ -230,7 +206,7 @@ Full documentation: **[https://django-control-room.github.io/dj-control-room/](h
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](docs/contributing.md) for details.
 
 ## License
 

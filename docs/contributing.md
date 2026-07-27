@@ -1,4 +1,4 @@
-# Development
+# Contributing
 
 Contributing to Django Control Room or setting up for local development.
 
@@ -90,6 +90,8 @@ dj-control-room/
 │   ├── urls.py               # URL patterns
 │   ├── models.py             # Placeholder model
 │   ├── admin.py              # Admin integration
+│   ├── registry.py           # Panel discovery via entry points
+│   ├── mcp_views.py          # MCP Streamable HTTP transport
 │   └── templates/            # HTML templates
 ├── tests/                    # Test suite
 │   ├── base.py               # Test base class
@@ -118,7 +120,7 @@ make docker_down    # Stop Docker services
 make docker_shell   # Open shell in container
 ```
 
-## Contributing
+## Submitting Changes
 
 1. Fork the repository
 2. Create a feature branch

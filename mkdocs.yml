@@ -41,7 +41,10 @@ nav:
   - Getting Started:
     - Installation: installation.md
     - Configuration: configuration.md
-  - Development: development.md
+    - Scopes: scopes.md
+  - Creating Panels: creating-panels.md
+  - API Reference: api-reference.md
+  - Development: contributing.md
 
 markdown_extensions:
   - pymdownx.highlight:

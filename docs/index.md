@@ -19,6 +19,7 @@ New to Django Control Room? Start here:
 1. **[Installation Guide](installation.md)** - Install Django Control Room and panels
 2. **[Quick Start](#quick-start)** - Get up and running in 5 minutes
 3. **[Configuration](configuration.md)** - Customize behavior and settings
+4. **[Scopes](scopes.md)** - Lock down the dashboard or install views by group
 
 ## Quick Start
 
@@ -59,6 +60,7 @@ Visit: `http://localhost:8000/admin/dj-control-room/`
 
 - **[Installation Guide](installation.md)** - Step-by-step installation instructions
 - **[Configuration](configuration.md)** - Settings and customization options
+- **[Scopes](scopes.md)** - Permission scopes and access control
 
 ### Developer Guides
 
@@ -105,6 +107,8 @@ When running under [django-unfold](https://github.com/unfoldadmin/django-unfold)
 ### django-jazzmin Theme
 
 When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
+
+![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
 
 ### Secure by Default
 
@@ -172,7 +176,7 @@ Need help? Here's how to get support:
 
 ## Contributing
 
-We welcome contributions! Please check the GitHub repository for contribution guidelines.
+We welcome contributions! See [Contributing](contributing.md) for local development setup and guidelines.
 
 ## License
 
@@ -188,6 +192,7 @@ Created by [Yasser Toruno](https://github.com/yassi)
 
 - **First time?** → [Installation Guide](installation.md)
 - **Setting up?** → [Configuration](configuration.md)  
+- **Locking things down?** → [Scopes](scopes.md)
 - **Building a panel?** → [Creating Panels](creating-panels.md)
 - **Need API details?** → [API Reference](api-reference.md)
 - **Want more examples?** → [djangocontrolroom.com](https://djangocontrolroom.com)

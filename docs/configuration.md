@@ -4,6 +4,8 @@ Django Control Room offers flexible configuration options to customize its behav
 
 Official Site: **[djangocontrolroom.com](https://djangocontrolroom.com)**.
 
+For access control specifically (locking down the dashboard or install views by group), see [Scopes](scopes.md).
+
 ![Control Room Features](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
 
 ## Settings Overview
@@ -73,7 +75,43 @@ Currently available:
 
 ![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
+![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
+
 See the [dj-control-room-base configuration docs](https://django-control-room.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
+
+## AI Agent Integration (MCP)
+
+Django Control Room ships a single MCP Streamable HTTP endpoint at `/admin/dj-control-room/mcp/` that aggregates and exposes every installed panel's tools to AI agents (Cursor, Claude, etc.) in one place, so agents only need to configure one server for your whole admin toolset.
+
+It is disabled by default. All three settings are required to turn it on:
+
+```python
+DJ_CONTROL_ROOM_SETTINGS = {
+    'MCP_ENABLED': True,
+    'MCP_TOKEN': 'your-secret-token',   # Bearer token checked on every request
+    'MCP_USERNAME': 'admin',            # Django username whose permissions apply
+}
+```
+
+### `MCP_ENABLED`
+
+**Type:** `bool`  
+**Default:** `False`  
+**Description:** Enables the MCP endpoint. When `False`, it returns `404`.
+
+### `MCP_TOKEN`
+
+**Type:** `str`  
+**Default:** `None`  
+**Description:** Secret Bearer token clients must send as `Authorization: Bearer <token>`. Required when `MCP_ENABLED` is `True`.
+
+### `MCP_USERNAME`
+
+**Type:** `str`  
+**Default:** `None`  
+**Description:** Username of the Django staff user whose permissions apply to every tool call made over MCP. There is no fallback to "the first superuser" by design; the user must exist, be active, and be staff.
+
+Each tool call is checked against the *originating panel's own* scope and `SCOPE_PERMISSIONS`, exactly as if it were called directly from that panel. See [Scopes](scopes.md#panel-tool-scopes-mcp) for details.
 
 ## Admin Sidebar Behavior
 
@@ -346,5 +384,6 @@ Configuration changes don't apply.
 ## Next Steps
 
 - [Installation Guide](installation.md)
+- [Scopes](scopes.md)
 - [Creating Panels](creating-panels.md)
 - [API Reference](api-reference.md)

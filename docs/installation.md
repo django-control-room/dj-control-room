@@ -210,6 +210,7 @@ If pip can't find the package:
 ## Next Steps
 
 - [Configuration Guide](configuration.md) - Learn about available settings
+- [Scopes](scopes.md) - Permission scopes and access control
 - [Creating Panels](creating-panels.md) - Build your own panels
 - [API Reference](api-reference.md) - Detailed API documentation
 
