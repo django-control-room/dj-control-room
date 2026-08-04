@@ -96,19 +96,13 @@ pip install dj-control-room[redis,cache,urls,celery]
 
 ### Beautiful UI
 
-Modern, responsive design that looks great in both light and dark mode.
+Modern, responsive design that looks great in both light and dark mode. Opt-in [theme adapters](configuration.md#theme-adapters) remap colors to match popular admin skins (django-unfold, django-jazzmin, django-grappelli) - nothing is applied automatically.
 
-### django-unfold Theme
+![django-unfold](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
-When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+![django-jazzmin](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
 
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
-
-### django-jazzmin Theme
-
-When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](configuration.md#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
-
-![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
+![django-grappelli](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-grappelli.png)
 
 ### Secure by Default
 

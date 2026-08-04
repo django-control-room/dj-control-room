@@ -15,10 +15,10 @@ All Django Control Room settings are configured in your Django `settings.py` fil
 ```python
 # settings.py
 DJ_CONTROL_ROOM_SETTINGS = {
-    'REGISTER_PANELS_IN_ADMIN': False,
-    'PANEL_ADMIN_REGISTRATION': {},
-    'LOAD_DEFAULT_CSS': True,
-    'EXTRA_CSS': [],
+    "REGISTER_PANELS_IN_ADMIN": False,
+    "PANEL_ADMIN_REGISTRATION": {},
+    "LOAD_DEFAULT_CSS": True,
+    "EXTRA_CSS": [],
 }
 ```
 
@@ -32,7 +32,7 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'LOAD_DEFAULT_CSS': False,  # Skip built-in styles entirely
+    "LOAD_DEFAULT_CSS": False,  # Skip built-in styles entirely
 }
 ```
 
@@ -46,11 +46,11 @@ Static file paths follow the same convention as Django's `{% static %}` tag: the
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'EXTRA_CSS': [
+    "EXTRA_CSS": [
         # File lives at: myapp/static/myapp/css/overrides.css
-        'myapp/css/overrides.css',
+        "myapp/css/overrides.css",
         # Full URLs are also supported (e.g. CDN-hosted theme)
-        'https://cdn.example.com/theme.css',
+        "https://cdn.example.com/theme.css",
     ],
 }
 ```
@@ -61,7 +61,7 @@ Django Control Room builds on `dj-control-room-base`, which ships optional token
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'EXTRA_CSS': ['dj_control_room_base/css/themes/unfold.css'],
+    "EXTRA_CSS": ["dj_control_room_base/css/themes/unfold.css"],
 }
 ```
 
@@ -70,12 +70,15 @@ Currently available:
 | File | For |
 |---|---|
 | `themes/unfold.css` | Projects using [django-unfold](https://github.com/unfoldadmin/django-unfold) as their admin skin. |
+| `themes/jazzmin.css` | Projects using [django-jazzmin](https://github.com/farridav/django-jazzmin) as their admin skin. |
+| `themes/grappelli.css` | Projects using [django-grappelli](https://github.com/sehmaschine/django-grappelli) as their admin skin. |
 
-`themes/unfold.css` remaps Django Control Room's accent/surface/border/muted tokens to Unfold's own CSS variables, so the dashboard matches the host site's configured brand color instead of the classic-admin blue. `themes/jazzmin.css` does the same for Jazzmin's Bootstrap 5 / Bootswatch variables (`--bs-primary`, `--bs-body-*`, `--bs-border-color`).
 
 ![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
 ![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
+
+![Django Control Room Dashboard with django-grappelli theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-grappelli.png)
 
 See the [dj-control-room-base configuration docs](https://django-control-room.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
 
@@ -87,9 +90,9 @@ It is disabled by default. All three settings are required to turn it on:
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'MCP_ENABLED': True,
-    'MCP_TOKEN': 'your-secret-token',   # Bearer token checked on every request
-    'MCP_USERNAME': 'admin',            # Django username whose permissions apply
+    "MCP_ENABLED": True,
+    "MCP_TOKEN": "your-secret-token",  # Bearer token checked on every request
+    "MCP_USERNAME": "admin",  # Django username whose permissions apply
 }
 ```
 
@@ -128,7 +131,7 @@ Control whether ALL panels register in both places:
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
     # Show panels in both Control Room AND their own admin sections
-    'REGISTER_PANELS_IN_ADMIN': True,
+    "REGISTER_PANELS_IN_ADMIN": True,
 }
 ```
 
@@ -151,13 +154,12 @@ Fine-grained control for specific panels:
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'REGISTER_PANELS_IN_ADMIN': False,  # Default for all
-    
-    'PANEL_ADMIN_REGISTRATION': {
-        'dj_redis_panel': True,   # Redis shows in both places
-        'dj_cache_panel': False,  # Cache only in Control Room
-        'dj_urls_panel': True,    # URLs shows in both places
-    }
+    "REGISTER_PANELS_IN_ADMIN": False,  # Default for all
+    "PANEL_ADMIN_REGISTRATION": {
+        "dj_redis_panel": True,  # Redis shows in both places
+        "dj_cache_panel": False,  # Cache only in Control Room
+        "dj_urls_panel": True,  # URLs shows in both places
+    },
 }
 ```
 
@@ -210,12 +212,11 @@ Django Control Room expects panels to be mounted with explicit paths under `/adm
 # urls.py
 urlpatterns = [
     # Mount panels with explicit paths under admin
-    path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
-    path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),
-    
+    path("admin/dj-redis-panel/", include("dj_redis_panel.urls")),
+    path("admin/dj-cache-panel/", include("dj_cache_panel.urls")),
     # Control Room dashboard
-    path('admin/dj-control-room/', include('dj_control_room.urls')),
-    path('admin/', admin.site.urls),
+    path("admin/dj-control-room/", include("dj_control_room.urls")),
+    path("admin/", admin.site.urls),
 ]
 ```
 
@@ -265,6 +266,7 @@ All panel views should use Django's built-in permission decorators:
 ```python
 from django.contrib.admin.views.decorators import staff_member_required
 
+
 @staff_member_required
 def my_panel_view(request):
     # Your view logic
@@ -279,8 +281,8 @@ To change the Control Room dashboard URL:
 # urls.py
 urlpatterns = [
     # Custom path instead of 'admin/dj-control-room/'
-    path('dashboard/control-room/', include('dj_control_room.urls')),
-    path('admin/', admin.site.urls),
+    path("dashboard/control-room/", include("dj_control_room.urls")),
+    path("admin/", admin.site.urls),
 ]
 ```
 
@@ -293,7 +295,7 @@ Use environment variables for different configurations:
 import os
 
 DJ_CONTROL_ROOM_SETTINGS = {
-    'REGISTER_PANELS_IN_ADMIN': os.getenv('CR_REGISTER_PANELS', 'False') == 'True',
+    "REGISTER_PANELS_IN_ADMIN": os.getenv("CR_REGISTER_PANELS", "False") == "True",
 }
 ```
 
@@ -339,8 +341,8 @@ Add comments explaining why you changed settings:
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
     # Redis panel needs to be in both places for legacy admin links
-    'PANEL_ADMIN_REGISTRATION': {
-        'dj_redis_panel': True,
+    "PANEL_ADMIN_REGISTRATION": {
+        "dj_redis_panel": True,
     }
 }
 ```

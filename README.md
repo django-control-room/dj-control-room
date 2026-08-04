@@ -17,7 +17,7 @@
 
 <h1 align="center">Django Control Room</h1>
 <p align="center">
-  <strong>A framework for building Django admin tools, with a centralized dashboard to manage them</strong>
+  <strong>A framework for building Django admin tools and a growing suite of operational tools for your project.</strong>
 </p>
 
 
@@ -37,34 +37,20 @@ The [Official Panels](#official-panels) below are reference implementations of t
 - **Secure** - Package verification prevents panel hijacking
 - **Easy Integration** - Works seamlessly with Django admin
 - **Official Panels** - Pre-built panels for common tasks, built on the same framework available to you
-- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters))
+- **Theme adapters** - opt-in stylesheets for [django-unfold](https://github.com/unfoldadmin/django-unfold), [django-jazzmin](https://github.com/farridav/django-jazzmin), and [django-grappelli](https://github.com/sehmaschine/django-grappelli) (see [Theme adapters](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters))
 - **AI Agent Integration (MCP)** - a single MCP endpoint aggregates every installed panel's tools for AI agents (Cursor, Claude, etc.), so agents only need to configure one server for your whole admin toolset (see [Configuration](https://django-control-room.github.io/dj-control-room/configuration/#ai-agent-integration-mcp))
 
 ![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
-### django-unfold Theme
+### Theme adapters
 
-When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+Opt-in stylesheets that remap the dashboard to match popular admin skins. Enable via `EXTRA_CSS` - nothing is applied automatically. See [Theme adapters](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters) for the full list.
 
-```python
-DJ_CONTROL_ROOM_SETTINGS = {
-    'EXTRA_CSS': ['dj_control_room_base/css/themes/unfold.css'],
-}
-```
+![django-unfold](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
 
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
+![django-jazzmin](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
 
-### django-jazzmin Theme
-
-When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](https://django-control-room.github.io/dj-control-room/configuration/#theme-adapters) via `EXTRA_CSS` to match the dashboard's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
-
-```python
-DJ_CONTROL_ROOM_SETTINGS = {
-    'EXTRA_CSS': ['dj_control_room_base/css/themes/jazzmin.css'],
-}
-```
-
-![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
+![django-grappelli](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-grappelli.png)
 
 
 ## Installation
@@ -85,21 +71,21 @@ Add `dj_control_room_base` (core library), your panels, then `dj_control_room` (
 ```python
 INSTALLED_APPS = [
     # ...
-    'dj_control_room_base',
-    'dj_redis_panel',
-    'dj_cache_panel',
-    'dj_urls_panel',
-    'dj_control_room',
+    "dj_control_room_base",
+    "dj_redis_panel",
+    "dj_cache_panel",
+    "dj_urls_panel",
+    "dj_control_room",
 ]
 ```
 
 ```python
 urlpatterns = [
-    path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
-    path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),
-    path('admin/dj-urls-panel/', include('dj_urls_panel.urls')),
-    path('admin/dj-control-room/', include('dj_control_room.urls')),
-    path('admin/', admin.site.urls),
+    path("admin/dj-redis-panel/", include("dj_redis_panel.urls")),
+    path("admin/dj-cache-panel/", include("dj_cache_panel.urls")),
+    path("admin/dj-urls-panel/", include("dj_urls_panel.urls")),
+    path("admin/dj-control-room/", include("dj_control_room.urls")),
+    path("admin/", admin.site.urls),
 ]
 ```
 
@@ -123,19 +109,17 @@ All installed panels appear in the Django admin sidebar under "Django Control Ro
 # settings.py
 DJ_CONTROL_ROOM_SETTINGS = {
     # Global: Show panels in both Control Room and their own sections
-    'REGISTER_PANELS_IN_ADMIN': False,  # Default: False
-
+    "REGISTER_PANELS_IN_ADMIN": False,  # Default: False
     # Per-panel: Override for specific panels
-    'PANEL_ADMIN_REGISTRATION': {
-        'dj_redis_panel': True,   # Redis in both places
-        'dj_cache_panel': False,  # Cache only in Control Room
+    "PANEL_ADMIN_REGISTRATION": {
+        "dj_redis_panel": True,  # Redis in both places
+        "dj_cache_panel": False,  # Cache only in Control Room
     },
-
     # CSS: load built-in styles and/or inject your own
-    'LOAD_DEFAULT_CSS': True,
+    "LOAD_DEFAULT_CSS": True,
     # Static paths are relative to app's static/ dir (e.g. 'myapp/css/overrides.css'
     # for a file at myapp/static/myapp/css/overrides.css). Full URLs also accepted.
-    'EXTRA_CSS': [],
+    "EXTRA_CSS": [],
 }
 ```
 
