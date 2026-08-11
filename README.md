@@ -22,7 +22,7 @@
 
 ---
 
-Django Control Room is a **plugin framework for building Django admin tools** (called "panels"), and a suite of official panels for services like Redis, Celery, and caches, plus Django internals like URLs and Signals. Every panel, official or third-party, is a small independent Python package built on the public plugin API in [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base).
+Django Control Room is a **plugin framework for building Django admin tools** (called "panels"), and a suite of official panels for services like Redis, Celery, and caches, plus Django internals like URLs and Signals. Every panel, official or third-party, is a small independent Python package built on the public plugin API in [dj-control-room-base](https://django-control-room.github.io/dj-control-room-base/).
 
 Install `dj-control-room` and it discovers compatible panels via Python entry points, renders them in a centralized dashboard, and gives them a shared design system, permissions model, and admin sidebar integration.
 
@@ -30,7 +30,7 @@ Install `dj-control-room` and it discovers compatible panels via Python entry po
 
 ## Features
 
-- **Plugin framework** - build admin tools on [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base); custom panels behave like the official ones
+- **Plugin framework** - build admin tools on [dj-control-room-base](https://django-control-room.github.io/dj-control-room-base/); custom panels behave like the official ones
 - **Centralized dashboard** - installed panels are discovered automatically and shown in one place
 - **Shared UI** - responsive design and dark mode via a common design system; [theme adapters](https://django-control-room.github.io/dj-control-room/themes/) for popular admin skins
 - **Secure** - package verification and staff-gated access
@@ -111,12 +111,12 @@ For a full guide, see [Creating Panels](https://django-control-room.github.io/dj
 
 | Page | Contents |
 |------|----------|
-| [Installation](docs/installation.md) | Install, `INSTALLED_APPS`, URLs |
-| [Configuration](docs/configuration.md) | Settings, sidebar, CSS, MCP |
-| [Scopes](docs/scopes.md) | Permission scopes |
-| [Theme Adapters](docs/themes.md) | Supported admin skins and screenshots |
-| [Creating Panels](docs/creating-panels.md) | Build custom panels |
-| [API Reference](docs/api-reference.md) | Public API |
+| [Installation](https://django-control-room.github.io/dj-control-room/installation/) | Install, `INSTALLED_APPS`, URLs |
+| [Configuration](https://django-control-room.github.io/dj-control-room/configuration/) | Settings, sidebar, CSS, MCP |
+| [Scopes](https://django-control-room.github.io/dj-control-room/scopes/) | Permission scopes |
+| [Theme Adapters](https://django-control-room.github.io/dj-control-room/themes/) | Supported admin skins and screenshots |
+| [Creating Panels](https://django-control-room.github.io/dj-control-room/creating-panels/) | Build custom panels |
+| [API Reference](https://django-control-room.github.io/dj-control-room/api-reference/) | Public API |
 
 ## Requirements
 
@@ -125,11 +125,11 @@ For a full guide, see [Creating Panels](https://django-control-room.github.io/dj
 
 ## Contributing
 
-See the [Contributing Guide](docs/contributing.md).
+See the [Contributing Guide](https://django-control-room.github.io/dj-control-room/contributing/).
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/django-control-room/dj-control-room/blob/main/LICENSE).
 
 ## Credits
 

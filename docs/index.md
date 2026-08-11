@@ -8,7 +8,7 @@
   </picture>
 </p>
 
-Django Control Room is a plugin framework for Django admin tools ("panels") and a suite of official panels for Redis, Celery, caches, URLs, Signals, and more. Panels are independent packages built on [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base). The hub discovers them via entry points and renders them in one dashboard with shared CSS, permissions, and admin sidebar integration.
+Django Control Room is a plugin framework for Django admin tools ("panels") and a suite of official panels for Redis, Celery, caches, URLs, Signals, and more. Panels are independent packages built on [dj-control-room-base](https://django-control-room.github.io/dj-control-room-base/). The hub discovers them via entry points and renders them in one dashboard with shared CSS, permissions, and admin sidebar integration.
 
 **Official site:** [djangocontrolroom.com](https://djangocontrolroom.com)
 
@@ -20,21 +20,21 @@ Django Control Room is a plugin framework for Django admin tools ("panels") and 
 
 | Page | What you'll find |
 |------|------------------|
-| [Installation](installation.md) | Install, `INSTALLED_APPS` (including `dj_control_room_base`), URLs |
-| [Configuration](configuration.md) | Settings, sidebar behavior, CSS, MCP |
-| [Scopes](scopes.md) | Permission scopes and access control |
-| [Theme Adapters](themes.md) | Supported admin skins, screenshots, DIY adapters |
-| [Creating Panels](creating-panels.md) | Cookiecutter template and manual panel authoring |
-| [API Reference](api-reference.md) | Public API |
-| [Contributing](contributing.md) | Local development setup |
+| [Installation](https://django-control-room.github.io/dj-control-room/installation/) | Install, `INSTALLED_APPS` (including `dj_control_room_base`), URLs |
+| [Configuration](https://django-control-room.github.io/dj-control-room/configuration/) | Settings, sidebar behavior, CSS, MCP |
+| [Scopes](https://django-control-room.github.io/dj-control-room/scopes/) | Permission scopes and access control |
+| [Theme Adapters](https://django-control-room.github.io/dj-control-room/themes/) | Supported admin skins, screenshots, DIY adapters |
+| [Creating Panels](https://django-control-room.github.io/dj-control-room/creating-panels/) | Cookiecutter template and manual panel authoring |
+| [API Reference](https://django-control-room.github.io/dj-control-room/api-reference/) | Public API |
+| [Contributing](https://django-control-room.github.io/dj-control-room/contributing/) | Local development setup |
 
 ### Official panels
 
-- [Redis Panel](https://github.com/django-control-room/dj-redis-panel)
-- [Cache Panel](https://github.com/django-control-room/dj-cache-panel)
-- [Celery Panel](https://github.com/django-control-room/dj-celery-panel)
-- [URLs Panel](https://github.com/django-control-room/dj-urls-panel)
-- [Signals Panel](https://github.com/django-control-room/dj-signals-panel)
+- [Redis Panel](https://django-control-room.github.io/dj-redis-panel/)
+- [Cache Panel](https://django-control-room.github.io/dj-cache-panel/)
+- [Celery Panel](https://django-control-room.github.io/dj-celery-panel/)
+- [URLs Panel](https://django-control-room.github.io/dj-urls-panel/)
+- [Signals Panel](https://django-control-room.github.io/dj-signals-panel/)
 
 ---
 
@@ -69,7 +69,7 @@ urlpatterns = [
 
 Visit `http://localhost:8000/admin/dj-control-room/`.
 
-See [Installation](installation.md) for the full walkthrough.
+See [Installation](https://django-control-room.github.io/dj-control-room/installation/) for the full walkthrough.
 
 ---
 
@@ -91,3 +91,4 @@ MIT. See [LICENSE](https://github.com/django-control-room/dj-control-room/blob/m
 ## Credits
 
 Created by [Yasser Toruno](https://github.com/yassi)
+ 
