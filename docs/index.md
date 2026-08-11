@@ -20,13 +20,13 @@ Django Control Room is a plugin framework for Django admin tools ("panels") and 
 
 | Page | What you'll find |
 |------|------------------|
-| [Installation](https://django-control-room.github.io/dj-control-room/installation/) | Install, `INSTALLED_APPS` (including `dj_control_room_base`), URLs |
-| [Configuration](https://django-control-room.github.io/dj-control-room/configuration/) | Settings, sidebar behavior, CSS, MCP |
-| [Scopes](https://django-control-room.github.io/dj-control-room/scopes/) | Permission scopes and access control |
-| [Theme Adapters](https://django-control-room.github.io/dj-control-room/themes/) | Supported admin skins, screenshots, DIY adapters |
-| [Creating Panels](https://django-control-room.github.io/dj-control-room/creating-panels/) | Cookiecutter template and manual panel authoring |
-| [API Reference](https://django-control-room.github.io/dj-control-room/api-reference/) | Public API |
-| [Contributing](https://django-control-room.github.io/dj-control-room/contributing/) | Local development setup |
+| [Installation](installation.md) | Install, `INSTALLED_APPS` (including `dj_control_room_base`), URLs |
+| [Configuration](configuration.md) | Settings, sidebar behavior, CSS, MCP |
+| [Scopes](scopes.md) | Permission scopes and access control |
+| [Theme Adapters](themes.md) | Supported admin skins, screenshots, DIY adapters |
+| [Creating Panels](creating-panels.md) | Cookiecutter template and manual panel authoring |
+| [API Reference](api-reference.md) | Public API |
+| [Contributing](contributing.md) | Local development setup |
 
 ### Official panels
 
@@ -69,7 +69,7 @@ urlpatterns = [
 
 Visit `http://localhost:8000/admin/dj-control-room/`.
 
-See [Installation](https://django-control-room.github.io/dj-control-room/installation/) for the full walkthrough.
+See [Installation](installation.md) for the full walkthrough.
 
 ---
 
