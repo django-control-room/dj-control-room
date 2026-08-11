@@ -45,7 +45,7 @@ nav:
     - Theme Adapters: themes.md
   - Creating Panels: creating-panels.md
   - API Reference: api-reference.md
-  - Development: contributing.md
+  - Contributing: contributing.md
 
 markdown_extensions:
   - pymdownx.highlight:
