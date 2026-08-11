@@ -57,30 +57,28 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ### Theme adapters
 
-Django Control Room builds on `dj-control-room-base`, which ships optional token-override stylesheets for admin skins that don't match the classic Django admin palette. These aren't loaded automatically - add the one you need to `EXTRA_CSS`:
+Django Control Room builds on `dj-control-room-base`, which ships token-override stylesheets for admin skins that do not match the classic Django admin palette. With the default `THEME_AUTO_DETECT = True`, panels detect the active skin from `INSTALLED_APPS` and load either a matching adapter or a general light/dark pin for known unsupported skins (through the same pipeline as `EXTRA_CSS`). Turn it off to opt out and load an adapter manually:
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    "EXTRA_CSS": ["dj_control_room_base/css/themes/unfold.css"],
+    "THEME_AUTO_DETECT": True,  # default
+    # Or opt out:
+    # "THEME_AUTO_DETECT": False,
+    # "EXTRA_CSS": ["dj_control_room_base/css/themes/unfold.css"],
 }
 ```
 
-Currently available:
-
 | File | For |
 |---|---|
-| `themes/unfold.css` | Projects using [django-unfold](https://github.com/unfoldadmin/django-unfold) as their admin skin. |
-| `themes/jazzmin.css` | Projects using [django-jazzmin](https://github.com/farridav/django-jazzmin) as their admin skin. |
-| `themes/grappelli.css` | Projects using [django-grappelli](https://github.com/sehmaschine/django-grappelli) as their admin skin. |
+| `themes/unfold.css` | [django-unfold](https://github.com/unfoldadmin/django-unfold) |
+| `themes/jazzmin.css` | [django-jazzmin](https://github.com/farridav/django-jazzmin) |
+| `themes/grappelli.css` | [django-grappelli](https://github.com/sehmaschine/django-grappelli) |
+| `themes/admin-interface.css` | [django-admin-interface](https://github.com/fabiocaccamo/django-admin-interface) |
+| `themes/dracula.css` | [django-admin-dracula](https://github.com/dracula/django-admin) |
+| `themes/general-light.css` | Light-pin fallback for known skins without a first-class adapter |
+| `themes/general-dark.css` | Dark-pin fallback for known skins without a first-class adapter |
 
-
-![Django Control Room Dashboard with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
-
-![Django Control Room Dashboard with django-jazzmin theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
-
-![Django Control Room Dashboard with django-grappelli theme](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-grappelli.png)
-
-See the [dj-control-room-base configuration docs](https://django-control-room.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
+For screenshots, compatibility status, and DIY adapters, see [Theme Adapters](themes.md).
 
 ## AI Agent Integration (MCP)
 

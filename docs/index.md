@@ -1,4 +1,4 @@
-# Django Control Room Documentation
+# Django Control Room
 
 <p align="center">
   <picture>
@@ -8,23 +8,39 @@
   </picture>
 </p>
 
-Welcome to the Django Control Room documentation!
+Django Control Room is a plugin framework for Django admin tools ("panels") and a suite of official panels for Redis, Celery, caches, URLs, Signals, and more. Panels are independent packages built on [dj-control-room-base](https://github.com/django-control-room/dj-control-room-base). The hub discovers them via entry points and renders them in one dashboard with shared CSS, permissions, and admin sidebar integration.
 
-**Official Site**: [djangocontrolroom.com](https://djangocontrolroom.com)
+**Official site:** [djangocontrolroom.com](https://djangocontrolroom.com)
 
-## Getting Started
+![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
 
-New to Django Control Room? Start here:
+---
 
-1. **[Installation Guide](installation.md)** - Install Django Control Room and panels
-2. **[Quick Start](#quick-start)** - Get up and running in 5 minutes
-3. **[Configuration](configuration.md)** - Customize behavior and settings
-4. **[Scopes](scopes.md)** - Lock down the dashboard or install views by group
+## Documentation
 
-## Quick Start
+| Page | What you'll find |
+|------|------------------|
+| [Installation](installation.md) | Install, `INSTALLED_APPS` (including `dj_control_room_base`), URLs |
+| [Configuration](configuration.md) | Settings, sidebar behavior, CSS, MCP |
+| [Scopes](scopes.md) | Permission scopes and access control |
+| [Theme Adapters](themes.md) | Supported admin skins, screenshots, DIY adapters |
+| [Creating Panels](creating-panels.md) | Cookiecutter template and manual panel authoring |
+| [API Reference](api-reference.md) | Public API |
+| [Contributing](contributing.md) | Local development setup |
+
+### Official panels
+
+- [Redis Panel](https://github.com/django-control-room/dj-redis-panel)
+- [Cache Panel](https://github.com/django-control-room/dj-cache-panel)
+- [Celery Panel](https://github.com/django-control-room/dj-celery-panel)
+- [URLs Panel](https://github.com/django-control-room/dj-urls-panel)
+- [Signals Panel](https://github.com/django-control-room/dj-signals-panel)
+
+---
+
+## Quick start
 
 ```bash
-# Install with panels
 pip install dj-control-room[all]
 ```
 
@@ -32,127 +48,30 @@ pip install dj-control-room[all]
 # settings.py
 INSTALLED_APPS = [
     # ...
-    'dj_redis_panel',
-    'dj_cache_panel',
-    'dj_urls_panel',
-    'dj_control_room',  # list after panels so they appear in one section
+    "dj_control_room_base",  # required core library
+    "dj_redis_panel",
+    "dj_cache_panel",
+    "dj_urls_panel",
+    "dj_control_room",  # list after panels so they appear in one section
 ]
 ```
 
 ```python
 # urls.py
 urlpatterns = [
-    path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
-    path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),
-    path('admin/dj-urls-panel/', include('dj_urls_panel.urls')),
-    path('admin/dj-control-room/', include('dj_control_room.urls')),
-    path('admin/', admin.site.urls),
+    path("admin/dj-redis-panel/", include("dj_redis_panel.urls")),
+    path("admin/dj-cache-panel/", include("dj_cache_panel.urls")),
+    path("admin/dj-urls-panel/", include("dj_urls_panel.urls")),
+    path("admin/dj-control-room/", include("dj_control_room.urls")),
+    path("admin/", admin.site.urls),
 ]
 ```
 
-Visit: `http://localhost:8000/admin/dj-control-room/`
+Visit `http://localhost:8000/admin/dj-control-room/`.
 
-![Django Control Room Dashboard](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot.png)
+See [Installation](installation.md) for the full walkthrough.
 
-## Documentation
-
-### User Guides
-
-- **[Installation Guide](installation.md)** - Step-by-step installation instructions
-- **[Configuration](configuration.md)** - Settings and customization options
-- **[Scopes](scopes.md)** - Permission scopes and access control
-
-### Developer Guides
-
-- **[Creating Panels](creating-panels.md)** - Build custom panels using our cookiecutter template
-- **[Cookiecutter Template](https://github.com/django-control-room/cookiecutter-dj-control-room-plugin)** - Official panel template generator
-- **[API Reference](api-reference.md)** - Complete API documentation
-
-### Panel Documentation
-
-Official panel documentation:
-
-- [Redis Panel](https://github.com/django-control-room/dj-redis-panel) - Redis monitoring and key inspection
-- [Cache Panel](https://github.com/django-control-room/dj-cache-panel) - Django cache backend inspection
-- [Celery Panel](https://github.com/django-control-room/dj-celery-panel) - Django celery monitoring
-- [URLs Panel](https://github.com/django-control-room/dj-urls-panel) - URL pattern browsing and testing
-- [Signals Panel](https://github.com/django-control-room/dj-signals-panel) - Django Signals/Receivers inspection
-
-## Features
-
-### Centralized Dashboard
-
-All your admin panels in one unified dashboard. No more hunting through the admin sidebar.
-
-![Panel Grid](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/grid_image.png)
-
-### Plugin System
-
-Install panels from PyPI with a single command:
-
-```bash
-pip install dj-control-room[redis,cache,urls,celery]
-```
-
-### Beautiful UI
-
-Modern, responsive design that looks great in both light and dark mode. Opt-in [theme adapters](configuration.md#theme-adapters) remap colors to match popular admin skins (django-unfold, django-jazzmin, django-grappelli) - nothing is applied automatically.
-
-![django-unfold](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-unfold.png)
-
-![django-jazzmin](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-jazzmin.png)
-
-![django-grappelli](https://raw.githubusercontent.com/django-control-room/dj-control-room/main/images/full-screenshot-grappelli.png)
-
-### Secure by Default
-
-- Staff-only access
-- Package verification for official panels
-- Protection against panel hijacking
-
-### Official Panels
-
-Pre-built panels for common Django tasks:
-
-- **Redis Panel** - Monitor Redis connections and inspect keys
-- **Cache Panel** - Inspect Django cache backends
-- **URLs Panel** - Browse and test URL patterns
-- **Celery Panel** - Monitor Celery tasks
-- **Signals Panel** - Inspect Django signals and receivers
-- **Error Panel** (coming soon) - Monitor errors and exceptions
-
-## Architecture
-
-### Panel Discovery
-
-Panels are discovered via Python entry points:
-
-```toml
-[project.entry-points."dj_control_room.panels"]
-my_panel = "my_panel.panel:MyPanel"
-```
-
-When Django starts, Django Control Room:
-1. Scans for entry points in the `dj_control_room.panels` group
-2. Loads panel classes
-3. Validates required attributes
-4. Registers panels in the global registry
-
-### URL Structure
-
-- `/admin/dj-control-room/` - Control Room dashboard
-- `/admin/dj-redis-panel/` - Redis panel
-- `/admin/dj-cache-panel/` - Cache panel
-- etc.
-
-Panels are mounted at root level for clean URLs.
-
-### Admin Integration
-
-Django Control Room automatically:
-1. Creates proxy models for each panel
-2. Registers them under "Django Control Room" in admin sidebar
-3. Unregisters panel placeholder models (unless configured otherwise)
+---
 
 ## Requirements
 
@@ -161,32 +80,14 @@ Django Control Room automatically:
 
 ## Support
 
-Need help? Here's how to get support:
-
-- **[Official Site](https://djangocontrolroom.com)** - Guides, tutorials, and examples
-- **[GitHub Discussions](https://github.com/django-control-room/dj-control-room/discussions)** - Ask questions
-- **[Issue Tracker](https://github.com/django-control-room/dj-control-room/issues)** - Report bugs
-- **[GitHub Repository](https://github.com/django-control-room/dj-control-room)** - View source code
-
-## Contributing
-
-We welcome contributions! See [Contributing](contributing.md) for local development setup and guidelines.
+- [Official site](https://djangocontrolroom.com)
+- [GitHub Discussions](https://github.com/django-control-room/dj-control-room/discussions)
+- [Issue tracker](https://github.com/django-control-room/dj-control-room/issues)
 
 ## License
 
-Django Control Room is licensed under the MIT License.
+MIT. See [LICENSE](https://github.com/django-control-room/dj-control-room/blob/main/LICENSE).
 
 ## Credits
 
 Created by [Yasser Toruno](https://github.com/yassi)
-
----
-
-## What's Next?
-
-- **First time?** → [Installation Guide](installation.md)
-- **Setting up?** → [Configuration](configuration.md)  
-- **Locking things down?** → [Scopes](scopes.md)
-- **Building a panel?** → [Creating Panels](creating-panels.md)
-- **Need API details?** → [API Reference](api-reference.md)
-- **Want more examples?** → [djangocontrolroom.com](https://djangocontrolroom.com)

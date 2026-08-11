@@ -42,6 +42,7 @@ nav:
     - Installation: installation.md
     - Configuration: configuration.md
     - Scopes: scopes.md
+    - Theme Adapters: themes.md
   - Creating Panels: creating-panels.md
   - API Reference: api-reference.md
   - Development: contributing.md
