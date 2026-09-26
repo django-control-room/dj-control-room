@@ -102,6 +102,7 @@ class PanelRegistry:
         # longer part of the panel contract) and package is always available.
         panel._registry_id = panel_id
         panel._dist_name = dist_name
+        panel._from_entry_point = True
         if not getattr(panel, "app_name", None):
             panel.app_name = panel_id
         if not getattr(panel, "package", None):
@@ -114,6 +115,9 @@ class PanelRegistry:
             return
 
         if panel_id in self._panels:
+            # register() may have run first (panel apps are listed before the
+            # hub). Still record that an entry point claims this ID.
+            self._panels[panel_id]._from_entry_point = True
             logger.warning(
                 f"Panel ID '{panel_id}' is already registered. "
                 f"Skipping duplicate from {entry_point.value}"
@@ -219,8 +223,9 @@ class PanelRegistry:
         """
         Manually register a panel class.
 
-        This is useful for testing or for apps that want to register
-        panels programmatically rather than via entry points.
+        This is the path unpackaged project panels use from
+        ``AppConfig.ready()``. Packaged plugins should prefer an entry
+        point; ``register()`` remains valid for them too.
 
         Args:
             panel_class: The panel class to register
@@ -237,6 +242,7 @@ class PanelRegistry:
             )
 
         panel._registry_id = panel_id
+        panel._from_entry_point = False
         if not getattr(panel, "app_name", None):
             panel.app_name = panel_id
         if not getattr(panel, "package", None):

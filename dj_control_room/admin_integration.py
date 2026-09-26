@@ -13,7 +13,7 @@ from django.db import models
 from dj_control_room_base.core import BasePanelAdmin
 
 from .registry import registry
-from .utils import should_register_panel_admin
+from .utils import is_internal_panel, should_register_panel_admin
 from .featured_panels import get_featured_panel_ids, FRAMEWORK_PANEL_IDS
 
 logger = logging.getLogger(__name__)
@@ -105,12 +105,16 @@ def _register_panel_admin(panel):
     except Exception:
         pass
 
-    # Community panels are prefixed with "[+] " so they always sort
-    # after featured panels in the sidebar. "[" (ASCII 91) is greater than all
-    # uppercase letters (max "Z" = 90), which is what Django uses to sort
-    # models within an app in get_app_list.
+    # Community (third-party) panels are prefixed with "[+] " so they always
+    # sort after official and project panels in the sidebar. "[" (ASCII 91)
+    # is greater than all uppercase letters (max "Z" = 90), which is what
+    # Django uses to sort models within an app in get_app_list.
     is_featured = panel._registry_id in get_featured_panel_ids()
-    display_name = panel.name if is_featured else f"[+] {panel.name}"
+    display_name = (
+        panel.name
+        if is_featured or is_internal_panel(panel)
+        else f"[+] {panel.name}"
+    )
 
     # Create the proxy model class dynamically
     model_attrs = {

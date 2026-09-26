@@ -11,7 +11,9 @@ from .utils import (
     get_panel_config_status,
     get_featured_panels,
     get_community_panels,
+    get_internal_panels,
     get_core_panel,
+    is_internal_panel,
     _normalize_icon_color,
 )
 
@@ -21,10 +23,11 @@ def index(request):
     """
     Display panel dashboard.
 
-    Shows featured panels first (with install prompts if not installed),
-    followed by community panels.
+    Shows Official Panels first (with install prompts if not installed),
+    then Project Panels, then Community Panels.
     """
     featured_panels = get_featured_panels()
+    internal_panels = get_internal_panels()
     community_panels = get_community_panels()
     core_panel = get_core_panel()
 
@@ -32,6 +35,8 @@ def index(request):
         request,
         title="",
         featured_panels=featured_panels,
+        internal_panels=internal_panels,
+        has_internal_panels=len(internal_panels) > 0,
         community_panels=community_panels,
         has_community_panels=len(community_panels) > 0,
         core_panel=core_panel,
@@ -55,6 +60,8 @@ def install_panel(request, panel_id):
         # Not a featured panel — check if it's a registered community panel
         # that has declared enough metadata to render the install page.
         community_panel = registry.get_panel(panel_id)
+        if community_panel and is_internal_panel(community_panel):
+            return redirect("dj_control_room:index")
         if community_panel:
             panel_meta = {
                 "id": community_panel._registry_id,

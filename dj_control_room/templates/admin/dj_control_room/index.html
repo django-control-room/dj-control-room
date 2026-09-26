@@ -23,10 +23,10 @@
 </div>
 
 {# ------------------------------------------------------------------ #}
-{# Featured panels                                                     #}
+{# Official panels                                                      #}
 {# ------------------------------------------------------------------ #}
 <div class="dcr-section-header">
-  <h3 class="dcr-section-header__title">{% trans "Featured Panels" %}</h3>
+  <h3 class="dcr-section-header__title">{% trans "Official Panels" %}</h3>
 </div>
 
 <div class="dcr-panel-grid">
@@ -67,6 +67,41 @@
   </div>
   {% endfor %}
 </div>
+
+{# ------------------------------------------------------------------ #}
+{# Project panels                                                      #}
+{# ------------------------------------------------------------------ #}
+{% if has_internal_panels %}
+<div class="dcr-section-header dcr-mt-lg">
+  <h3 class="dcr-section-header__title">{% trans "Project Panels" %}</h3>
+</div>
+
+<div class="dcr-panel-grid">
+  {% for panel in internal_panels %}
+  <div class="dcr-panel-card">
+    <div class="dcr-panel-card__top">
+      <div class="dcr-panel-card__icon-wrap{% if panel.icon_color %} dcr-icon-color--{{ panel.icon_color }}{% else %} dcr-icon-color--info{% endif %}">
+        {% dcr_icon panel.icon "dcr-panel-card__icon" %}
+      </div>
+      {% if panel.configured %}
+      <span class="dcr-badge dcr-badge--success">{% trans "INSTALLED" %}</span>
+      {% else %}
+      <span class="dcr-badge dcr-badge--warning">{% trans "SETUP" %}</span>
+      {% endif %}
+    </div>
+    <h3 class="dcr-panel-card__title">{{ panel.name }}</h3>
+    <p class="dcr-panel-card__desc">{{ panel.description }}</p>
+    <div class="dcr-panel-card__footer">
+      {% if panel.configured %}
+      <a href="{{ panel.url }}" class="dcr-panel-card__link">{% trans "View panel" %}</a>
+      {% else %}
+      <span class="dcr-panel-card__link dcr-panel-card__link--muted">{% trans "Add URLs to configure" %}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 
 {# ------------------------------------------------------------------ #}
 {# Community panels                                                    #}

@@ -2,9 +2,13 @@
 Utility functions for DJ Control Room.
 """
 
-from django.urls import reverse
-from django.apps import apps as django_apps
+from collections import defaultdict
 import logging
+import sys
+
+from django.apps import apps as django_apps
+from django.conf import settings
+from django.urls import reverse
 
 from .conf import panel_config
 from .registry import registry
@@ -115,13 +119,14 @@ def get_panel_data(panel):
     """
     panel_id = panel._registry_id
     featured = is_featured_panel(panel_id)
+    internal = is_internal_panel(panel)
 
     # app_name is stamped onto the panel by the registry at discovery time;
     # it defaults to the normalized dist name if not explicitly set.
     panel_app_name = panel.app_name
     config = get_panel_config_status(panel_id, panel_app_name)
 
-    has_install_page = True
+    has_install_page = not internal
 
     if config["is_configured"]:
         url_name = getattr(panel, "get_url_name", lambda: "index")()
@@ -150,6 +155,7 @@ def get_panel_data(panel):
         "in_installed_apps": config["in_installed_apps"],
         "urls_registered": config["urls_registered"],
         "featured": featured,
+        "internal": internal,
         "package": getattr(panel, "package", None),
         "docs_url": getattr(panel, "docs_url", None),
         "pypi_url": getattr(panel, "pypi_url", None),
@@ -204,25 +210,129 @@ def get_featured_panels():
 
 
 # IDs of first-party infrastructure packages that should not appear as
-# community panels on the dashboard. They are presented separately in the
-# hub's footer/framework section.
+# community or internal panels on the dashboard. They are presented
+# separately in the hub's footer/framework section.
 CORE_PANEL_IDS = {"dj_control_room_base"}
+
+
+def _normalize_dist_name(name):
+    return name.lower().replace("-", "_")
+
+
+def _packages_distributions():
+    """Map top-level import names to distribution names (PEP 503)."""
+    if sys.version_info >= (3, 10):
+        from importlib.metadata import packages_distributions
+
+        return packages_distributions()
+
+    from importlib.metadata import distributions
+
+    mapping = defaultdict(list)
+    for dist in distributions():
+        dist_name = dist.metadata["Name"]
+        top_level = dist.read_text("top_level.txt")
+        if top_level:
+            names = [line.strip() for line in top_level.splitlines() if line.strip()]
+        else:
+            names = []
+            try:
+                files = dist.files or []
+            except Exception:
+                files = []
+            seen = set()
+            for file in files:
+                first = file.parts[0] if file.parts else ""
+                if not first or first.endswith((".dist-info", ".data")):
+                    continue
+                name = first[:-3] if first.endswith(".py") else first
+                if name not in seen:
+                    seen.add(name)
+                    names.append(name)
+        for name in names:
+            mapping[name].append(dist_name)
+    return mapping
+
+
+def _distributions_for_package(package_name):
+    """Normalized dist names that own this top-level import package."""
+    if not package_name or not isinstance(package_name, str):
+        return set()
+    top = package_name.split(".")[0]
+    names = _packages_distributions().get(top) or []
+    return {_normalize_dist_name(name) for name in names}
+
+
+def _has_foreign_distribution(panel):
+    """True when the panel's package belongs to an installed third-party dist."""
+    package_name = getattr(panel, "app_name", None) or getattr(
+        panel, "_registry_id", None
+    )
+    panel_dists = _distributions_for_package(package_name)
+    if not panel_dists:
+        return False
+    settings_module = getattr(settings, "SETTINGS_MODULE", "") or ""
+    project_top = settings_module.split(".")[0]
+    project_dists = _distributions_for_package(project_top)
+    return not panel_dists <= project_dists
+
+
+def is_internal_panel(panel):
+    """
+    True for unpackaged project panels.
+
+    Entry-point plugins are never internal. A ``register()`` panel whose
+    import package belongs to some other installed distribution is treated
+    as community (``register()`` is public and packaged plugins may use it).
+    Featured and core IDs are excluded so they stay in their own buckets.
+    """
+    panel_id = getattr(panel, "_registry_id", None)
+    if not panel_id:
+        return False
+    if getattr(panel, "_from_entry_point", False):
+        return False
+    if is_featured_panel(panel_id) or panel_id in CORE_PANEL_IDS:
+        return False
+    if _has_foreign_distribution(panel):
+        return False
+    return True
+
+
+def get_internal_panels():
+    """
+    Get unpackaged project panels (no entry point, not a third-party dist).
+
+    Returns:
+        list: List of internal panel data
+    """
+    excluded_ids = set(get_featured_panel_ids()) | CORE_PANEL_IDS
+    internal_panels = []
+
+    for panel in registry.get_panels():
+        if panel._registry_id in excluded_ids:
+            continue
+        if is_internal_panel(panel):
+            internal_panels.append(get_panel_data(panel))
+
+    return internal_panels
 
 
 def get_community_panels():
     """
-    Get community (non-featured, non-core) panels.
+    Get community (non-featured, non-core, non-internal) panels.
 
     Returns:
         list: List of community panel data
     """
-    featured_ids = get_featured_panel_ids()
-    excluded_ids = set(featured_ids) | CORE_PANEL_IDS
+    excluded_ids = set(get_featured_panel_ids()) | CORE_PANEL_IDS
     community_panels = []
 
     for panel in registry.get_panels():
-        if panel._registry_id not in excluded_ids:
-            community_panels.append(get_panel_data(panel))
+        if panel._registry_id in excluded_ids:
+            continue
+        if is_internal_panel(panel):
+            continue
+        community_panels.append(get_panel_data(panel))
 
     return community_panels
 
