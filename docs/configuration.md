@@ -255,7 +255,7 @@ Django Control Room automatically requires staff permissions. Only users with `i
 
 ### Package Verification
 
-Featured panels are verified by package origin to prevent malicious packages from hijacking official panel IDs. This happens automatically - no configuration needed.
+Official Panels (the curated `FEATURED_PANELS` list) are verified by package origin to prevent malicious packages from hijacking those IDs. This happens automatically - no configuration needed.
 
 ### Permissions
 

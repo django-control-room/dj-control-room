@@ -186,7 +186,7 @@ from dj_control_room.registry import registry
 registry.register(MyPanel, panel_id='my_panel')
 ```
 
-> **Note:** Panels are normally registered automatically via entry points. Manual registration is mainly useful in tests.
+> **Note:** Packaged plugins are normally discovered via entry points. `register()` is the path unpackaged project panels use from `AppConfig.ready()`. The dashboard lists those under **Project Panels**. It is also valid for tests and for packaged plugins; a third-party install that only calls `register()` still appears under **Community Panels**.
 
 ## Views
 
@@ -230,7 +230,9 @@ def my_view(request):
     return render(request, 'admin/my_panel/index.html', context)
 ```
 
-## Featured Panels
+## Official Panels
+
+The dashboard heading is **Official Panels**. The curated list in code is `FEATURED_PANELS`.
 
 ### `FEATURED_PANELS`
 

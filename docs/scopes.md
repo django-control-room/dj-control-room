@@ -6,7 +6,7 @@ Django Control Room splits its own permission checks into **scopes**: named chec
 
 | Scope | Type | Protects | Default behavior |
 |---|---|---|---|
-| `dashboard` | View | `index` view: the Control Room dashboard listing featured/community panels | Any staff user |
+| `dashboard` | View | `index` view: the Control Room dashboard listing Official, Project, and Community panels | Any staff user |
 | `install` | View | `install_panel` view: the per-panel install/configuration guide | Any staff user |
 
 ## Example: restrict the dashboard to a specific group
