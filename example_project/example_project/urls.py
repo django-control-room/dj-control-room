@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path("admin/dcr-local-panel/", include("dcr_local_panel.urls")),
     path("admin/dj-control-room/", include("dj_control_room.urls")),
     path("admin/", admin.site.urls),
 ]
