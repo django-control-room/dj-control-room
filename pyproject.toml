@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dj-control-room"
-version = "1.7.1"
+version = "1.8.0"
 description = "The control room for your Django app"
 readme = "README.md"
 license = "MIT"
@@ -36,7 +36,7 @@ classifiers = [
 keywords = ["django", "admin", "panel"]
 dependencies = [
     "Django>=4.2",
-    "dj-control-room-base>=1.5.0",
+    "dj-control-room-base>=1.6.0",
 ]
 
 [project.optional-dependencies]
