@@ -67,10 +67,10 @@ That's it! Your panel will be automatically discovered by Django Control Room.
 The dashboard has three sections:
 
 - **Official Panels** — curated first-party panels from the hub's list
-- **Project Panels** — unpackaged apps in this Django project, registered from `AppConfig.ready()` (see `dcr_startpanel` in dj-control-room-base)
+- **Internal Panels** — unpackaged apps in this Django project, registered from `AppConfig.ready()` (see `dcr_startpanel` in dj-control-room-base)
 - **Community Panels** — other packaged plugins (entry point, or `register()` from a third-party install)
 
-A published package cannot appear under Project Panels. The hub classifies from the entry point and the package's installed distribution, not from a flag on the panel. In code, the official list is still `FEATURED_PANELS`, and project panels are the internal classification.
+A published package cannot appear under Internal Panels. The hub classifies from the entry point and the package's installed distribution, not from a flag on the panel. In code, the official list is still `FEATURED_PANELS`. Internal panels are the ones with no entry point and no third-party distribution.
 
 > **Note:** A plain class with the same attributes (no `PanelPlugin` base) still works for backward compatibility - the hub only checks for `name`, `description`, and `icon` via duck typing. `PanelPlugin` is recommended for all new panels: it documents the full contract in code, gives you a `validate()` helper for tests, and is what every official panel uses.
 

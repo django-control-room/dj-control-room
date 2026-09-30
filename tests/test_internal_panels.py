@@ -15,7 +15,7 @@ from .base import CeleryPanelTestCase
 
 class _UnpackagedPanel:
     name = "Project Lookup"
-    description = "Unpackaged project panel"
+    description = "Unpackaged internal panel"
     icon = "cog"
 
 
@@ -46,7 +46,7 @@ class TestInternalPanels(CeleryPanelTestCase):
 
         response = self.client.get(reverse("dj_control_room:index"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Project Panels")
+        self.assertContains(response, "Internal Panels")
         self.assertContains(response, "Project Lookup")
 
     def test_register_from_a_third_party_distribution_is_community(self):

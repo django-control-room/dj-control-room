@@ -279,7 +279,7 @@ def _has_foreign_distribution(panel):
 
 def is_internal_panel(panel):
     """
-    True for unpackaged project panels.
+    True for unpackaged internal panels.
 
     Entry-point plugins are never internal. A ``register()`` panel whose
     import package belongs to some other installed distribution is treated
@@ -300,7 +300,7 @@ def is_internal_panel(panel):
 
 def get_internal_panels():
     """
-    Get unpackaged project panels (no entry point, not a third-party dist).
+    Get unpackaged internal panels (no entry point, not a third-party dist).
 
     Returns:
         list: List of internal panel data

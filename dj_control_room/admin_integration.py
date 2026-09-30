@@ -106,7 +106,7 @@ def _register_panel_admin(panel):
         pass
 
     # Community (third-party) panels are prefixed with "[+] " so they always
-    # sort after official and project panels in the sidebar. "[" (ASCII 91)
+    # sort after official and internal panels in the sidebar. "[" (ASCII 91)
     # is greater than all uppercase letters (max "Z" = 90), which is what
     # Django uses to sort models within an app in get_app_list.
     is_featured = panel._registry_id in get_featured_panel_ids()
