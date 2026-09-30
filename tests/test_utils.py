@@ -40,6 +40,7 @@ def _make_panel(
     icon="chart",
     docs_url=None,
     pypi_url=None,
+    from_entry_point=True,
 ):
     """Return a plain object that mimics a registry-stamped panel instance."""
     obj = MagicMock()
@@ -51,6 +52,7 @@ def _make_panel(
     obj.icon = icon
     obj.docs_url = docs_url
     obj.pypi_url = pypi_url
+    obj._from_entry_point = from_entry_point
     obj.get_url_name = MagicMock(return_value="index")
     return obj
 

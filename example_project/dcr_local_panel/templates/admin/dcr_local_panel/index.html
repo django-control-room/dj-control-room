@@ -1,0 +1,17 @@
+{% extends "dj_control_room_base/panel_base.html" %}
+{% load i18n %}
+
+{% block panel_title %}{{ title }}{% endblock %}
+
+{% block panel_content %}
+<div class="dcr-page-header">
+  <div class="dcr-page-header__main">
+    <div class="dcr-page-header__body">
+      <div class="dcr-page-header__title-row">
+        <h1 class="dcr-page-header__title">{{ title }}</h1>
+      </div>
+      <p class="dcr-page-header__subtitle">{% trans "Your panel is set up and ready to build." %}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
