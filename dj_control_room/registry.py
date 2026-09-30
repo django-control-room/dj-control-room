@@ -223,7 +223,7 @@ class PanelRegistry:
         """
         Manually register a panel class.
 
-        This is the path unpackaged project panels use from
+        This is the path internal panels use from
         ``AppConfig.ready()``. Packaged plugins should prefer an entry
         point; ``register()`` remains valid for them too.
 

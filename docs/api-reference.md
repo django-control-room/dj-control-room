@@ -24,8 +24,8 @@ class MyPanel:
     icon: str
 
     # Optional attributes
-    app_name: str   # Defaults to normalized dist name (hyphens → underscores)
-    package: str    # PyPI package name — enables the install/configure page
+    app_name: str  # Defaults to normalized dist name (hyphens → underscores)
+    package: str  # PyPI package name — enables the install/configure page
     docs_url: str
     pypi_url: str
 
@@ -111,7 +111,7 @@ def get_url_name(self):
 
 Django Control Room resolves the panel's URL using:
 ```python
-reverse(f'{panel.app_name}:{url_name}')
+reverse(f"{panel.app_name}:{url_name}")
 ```
 
 ## Registry
@@ -163,7 +163,7 @@ Get a specific panel by ID.
 
 **Example:**
 ```python
-panel = registry.get_panel('dj_redis_panel')
+panel = registry.get_panel("dj_redis_panel")
 if panel:
     print(panel.name)
 ```
@@ -183,10 +183,10 @@ Manually register a panel class.
 from my_panel.panel import MyPanel
 from dj_control_room.registry import registry
 
-registry.register(MyPanel, panel_id='my_panel')
+registry.register(MyPanel, panel_id="my_panel")
 ```
 
-> **Note:** Packaged plugins are normally discovered via entry points. `register()` is the path unpackaged project panels use from `AppConfig.ready()`. The dashboard lists those under **Project Panels**. It is also valid for tests and for packaged plugins; a third-party install that only calls `register()` still appears under **Community Panels**.
+> **Note:** Packaged plugins are normally discovered via entry points. `register()` is the path internal panels use from `AppConfig.ready()`. The dashboard lists those under **Internal Panels**.
 
 ## Views
 
@@ -199,6 +199,7 @@ Django's built-in decorator to require staff permissions.
 **Example:**
 ```python
 from django.contrib.admin.views.decorators import staff_member_required
+
 
 @staff_member_required
 def my_view(request):
@@ -221,13 +222,16 @@ Get Django admin context for proper rendering.
 ```python
 from django.contrib import admin
 
+
 def my_view(request):
     context = admin.site.each_context(request)
-    context.update({
-        'title': 'My Panel',
-        'data': get_my_data(),
-    })
-    return render(request, 'admin/my_panel/index.html', context)
+    context.update(
+        {
+            "title": "My Panel",
+            "data": get_my_data(),
+        }
+    )
+    return render(request, "admin/my_panel/index.html", context)
 ```
 
 ## Official Panels
@@ -288,10 +292,10 @@ Get metadata for a featured panel.
 ```python
 from dj_control_room.featured_panels import get_featured_panel_metadata
 
-meta = get_featured_panel_metadata('dj_redis_panel')
+meta = get_featured_panel_metadata("dj_redis_panel")
 if meta:
-    print(meta['name'])  # "Redis Panel"
-    print(meta['package'])  # "dj-redis-panel"
+    print(meta["name"])  # "Redis Panel"
+    print(meta["package"])  # "dj-redis-panel"
 ```
 
 #### `is_featured_panel(panel_id)`
@@ -307,7 +311,7 @@ Check if a panel ID is a featured panel.
 ```python
 from dj_control_room.featured_panels import is_featured_panel
 
-if is_featured_panel('dj_redis_panel'):
+if is_featured_panel("dj_redis_panel"):
     print("This is an official panel")
 ```
 
@@ -322,8 +326,8 @@ Django settings dictionary for Django Control Room configuration.
 **Structure:**
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'REGISTER_PANELS_IN_ADMIN': bool,
-    'PANEL_ADMIN_REGISTRATION': dict,
+    "REGISTER_PANELS_IN_ADMIN": bool,
+    "PANEL_ADMIN_REGISTRATION": dict,
 }
 ```
 
@@ -337,7 +341,7 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'REGISTER_PANELS_IN_ADMIN': True,
+    "REGISTER_PANELS_IN_ADMIN": True,
 }
 ```
 
@@ -349,9 +353,9 @@ DJ_CONTROL_ROOM_SETTINGS = {
 
 ```python
 DJ_CONTROL_ROOM_SETTINGS = {
-    'PANEL_ADMIN_REGISTRATION': {
-        'dj_redis_panel': True,
-        'dj_cache_panel': False,
+    "PANEL_ADMIN_REGISTRATION": {
+        "dj_redis_panel": True,
+        "dj_cache_panel": False,
     }
 }
 ```
@@ -390,11 +394,11 @@ Panels should define their URLs with proper namespacing:
 from django.urls import path
 from . import views
 
-app_name = 'my_panel'  # Must match panel.app_name (defaults to normalized dist name)
+app_name = "my_panel"  # Must match panel.app_name (defaults to normalized dist name)
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('detail/<str:pk>/', views.detail, name='detail'),
+    path("", views.index, name="index"),
+    path("detail/<str:pk>/", views.detail, name="detail"),
 ]
 ```
 
@@ -405,7 +409,7 @@ Django Control Room resolves panel URLs using `panel.app_name` as the namespace:
 ```python
 from django.urls import reverse
 
-url = reverse(f'{panel.app_name}:{url_name}')
+url = reverse(f"{panel.app_name}:{url_name}")
 # Example: reverse('my_panel:index') -> '/admin/my-panel/'
 ```
 
@@ -418,6 +422,7 @@ Panels can define placeholder models for admin integration:
 ```python
 # my_panel/models.py
 from django.db import models
+
 
 class MyPanelPlaceholder(models.Model):
     class Meta:
@@ -462,7 +467,7 @@ Django Control Room uses Python's standard logging:
 ```python
 import logging
 
-logger = logging.getLogger('dj_control_room')
+logger = logging.getLogger("dj_control_room")
 ```
 
 **Log levels:**
@@ -475,16 +480,16 @@ logger = logging.getLogger('dj_control_room')
 ```python
 # settings.py
 LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'dj_control_room': {
-            'handlers': ['console'],
-            'level': 'INFO',
+    "loggers": {
+        "dj_control_room": {
+            "handlers": ["console"],
+            "level": "INFO",
         },
     },
 }
@@ -497,6 +502,7 @@ Django Control Room is fully typed. You can use type checkers like mypy:
 ```python
 from typing import List
 from dj_control_room.registry import registry
+
 
 def get_panel_names() -> List[str]:
     return [panel.name for panel in registry.get_panels()]

@@ -24,7 +24,7 @@ def index(request):
     Display panel dashboard.
 
     Shows Official Panels first (with install prompts if not installed),
-    then Project Panels, then Community Panels.
+    then Internal Panels, then Community Panels.
     """
     featured_panels = get_featured_panels()
     internal_panels = get_internal_panels()

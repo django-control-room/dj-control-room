@@ -12,7 +12,7 @@ class TestLocalPanelExample(CeleryPanelTestCase):
         community_ids = [panel["id"] for panel in response.context["community_panels"]]
         self.assertIn("dcr_local_panel", project_ids)
         self.assertNotIn("dcr_local_panel", community_ids)
-        self.assertContains(response, "Project Panels")
+        self.assertContains(response, "Internal Panels")
         self.assertContains(response, "Local Panel")
 
     def test_local_panel_index_is_reachable(self):
