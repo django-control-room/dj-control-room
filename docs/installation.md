@@ -149,7 +149,7 @@ from dj_control_room.registry import registry
 
 registry.autodiscover()
 for panel in registry.get_panels():
-    print(f"{panel.name} ({panel.id})")
+    print(f"{panel.name} ({panel._registry_id})")
 ```
 
 ### Access the Dashboard
