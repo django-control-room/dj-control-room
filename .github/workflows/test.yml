@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   python-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Python ${{ matrix.python-version }} - Django ${{ matrix.django-version }}
     strategy:
       fail-fast: false

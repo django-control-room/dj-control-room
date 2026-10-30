@@ -219,19 +219,24 @@ class PanelRegistry:
                     f"attribute '{method}' is not callable"
                 )
 
-    def register(self, panel_class, panel_id=None):
+    def register(self, panel_class, panel_id=None, internal=None):
         """
         Manually register a panel class.
 
-        This is the path internal panels use from
-        ``AppConfig.ready()``. Packaged plugins should prefer an entry
-        point; ``register()`` remains valid for them too.
+        This is the path internal (project-local) panels use from
+        ``AppConfig.ready()``. A panel registered this way is shown as
+        internal unless an entry point also claims it. Packaged plugins must
+        declare an entry point instead.
 
         Args:
             panel_class: The panel class to register
             panel_id: Required. The unique registry key for this panel (normally
                 derived from the distribution name during autodiscovery, but must
                 be supplied explicitly here since there is no entry point).
+            internal: Optional. ``True`` or ``False`` forces the panel into or
+                out of the Internal Panels section, whatever the entry point
+                says. ``None`` (default) leaves it to the entry-point check.
+                Featured and core panels ignore this.
         """
         panel = panel_class()
 
@@ -243,6 +248,7 @@ class PanelRegistry:
 
         panel._registry_id = panel_id
         panel._from_entry_point = False
+        panel._internal_override = internal
         if not getattr(panel, "app_name", None):
             panel.app_name = panel_id
         if not getattr(panel, "package", None):
@@ -251,6 +257,10 @@ class PanelRegistry:
         self._validate_panel(panel, panel_id)
 
         if panel_id in self._panels:
+            # Autodiscovery may have registered this ID first; honor an
+            # explicit override on the panel that is kept.
+            if isinstance(internal, bool):
+                self._panels[panel_id]._internal_override = internal
             logger.warning(
                 f"Panel ID '{panel_id}' is already registered. "
                 f"Skipping duplicate manual registration of {panel_class.__name__}."

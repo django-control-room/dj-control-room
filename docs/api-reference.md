@@ -168,13 +168,14 @@ if panel:
     print(panel.name)
 ```
 
-##### `register(panel_class, panel_id)`
+##### `register(panel_class, panel_id, internal=None)`
 
 Manually register a panel class.
 
 **Parameters:**
 - `panel_class`: The panel class to register
 - `panel_id` (str, required): The registry key for this panel. Normally derived from the dist name during autodiscovery, so must be supplied explicitly here.
+- `internal` (bool, optional): `True` or `False` forces the panel into or out of **Internal Panels**, regardless of any entry point. Leave it unset to let the entry-point check decide. Featured and core panels ignore it.
 
 **Returns:** `None`
 
@@ -186,7 +187,7 @@ from dj_control_room.registry import registry
 registry.register(MyPanel, panel_id="my_panel")
 ```
 
-> **Note:** Packaged plugins are normally discovered via entry points. `register()` is the path internal panels use from `AppConfig.ready()`. The dashboard lists those under **Internal Panels**.
+> **Note:** `register()` is the path internal panels use from `AppConfig.ready()`. The dashboard lists a panel registered this way under **Internal Panels** unless an entry point also claims it. Packaged plugins must declare an entry point to appear under Community Panels.
 
 ## Views
 

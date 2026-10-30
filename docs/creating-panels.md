@@ -68,9 +68,9 @@ The dashboard has three sections:
 
 - **Official Panels** — curated first-party panels from the hub's list
 - **Internal Panels** — unpackaged apps in this Django project, registered from `AppConfig.ready()` (see `dcr_startpanel` in dj-control-room-base)
-- **Community Panels** — other packaged plugins (entry point, or `register()` from a third-party install)
+- **Community Panels** — other packaged plugins, discovered through their entry point
 
-A published package cannot appear under Internal Panels. The hub classifies from the entry point and the package's installed distribution, not from a flag on the panel. In code, the official list is still `FEATURED_PANELS`. Internal panels are the ones with no entry point and no third-party distribution.
+The hub classifies from the entry point, not from a flag on the panel. In code, the official list is still `FEATURED_PANELS`. Internal panels are the ones registered with `register()` that have no entry point, so a published package must declare an entry point to appear under Community Panels.
 
 > **Note:** A plain class with the same attributes (no `PanelPlugin` base) still works for backward compatibility - the hub only checks for `name`, `description`, and `icon` via duck typing. `PanelPlugin` is recommended for all new panels: it documents the full contract in code, gives you a `validate()` helper for tests, and is what every official panel uses.
 

@@ -1,14 +1,15 @@
 """
 Internal panel classification.
 
-A panel is internal when it joined via register() (no entry point), is not
-featured/core, and does not belong to a third-party installed distribution.
+A panel is internal when it joined via register() with no entry point and is
+not featured/core. An entry point always makes it community.
 """
 
-from unittest.mock import patch
+from types import SimpleNamespace
 
 from django.urls import reverse
 
+from dj_control_room.featured_panels import get_featured_panel_ids
 from dj_control_room.registry import registry
 from dj_control_room.utils import (
     get_community_panels,
@@ -19,113 +20,103 @@ from dj_control_room.utils import (
 from .base import CeleryPanelTestCase
 
 
-class _UnpackagedPanel:
+class _ProjectPanel:
     name = "Project Lookup"
     description = "Unpackaged internal panel"
     icon = "cog"
 
 
-class _ThirdPartyReadyPanel:
-    name = "Ready Registered"
-    description = "Packaged panel that used register()"
-    icon = "cog"
-    app_name = "dj_cache_panel"
-
-
-class _CustomNamespacePanel:
-    name = "Custom Namespace"
-    description = "Packaged panel with a custom URL namespace"
-    icon = "cog"
-    app_name = "custom_url_namespace"
-    package = "third-party-dist"
-
-
-class _ImportPackagePanel:
-    name = "Import Package"
-    description = "Package identity is a top-level import name"
-    icon = "cog"
-    app_name = "custom_url_namespace"
-    package = "third_party_module"
-
-
 class TestInternalPanels(CeleryPanelTestCase):
-    UNPACKAGED_ID = "dcr_project_lookup"
-    THIRD_PARTY_ID = "ready_registered_clone"
-    CUSTOM_NAMESPACE_ID = "registered_panel_id"
-    IMPORT_PACKAGE_ID = "registered_import_package_id"
+    PANEL_ID = "dcr_project_lookup"
 
     def tearDown(self):
-        registry._panels.pop(self.UNPACKAGED_ID, None)
-        registry._panels.pop(self.THIRD_PARTY_ID, None)
-        registry._panels.pop(self.CUSTOM_NAMESPACE_ID, None)
-        registry._panels.pop(self.IMPORT_PACKAGE_ID, None)
+        registry._panels.pop(self.PANEL_ID, None)
         super().tearDown()
 
-    def test_register_without_a_distribution_is_internal(self):
-        registry.register(_UnpackagedPanel, panel_id=self.UNPACKAGED_ID)
+    def _entry_point(self):
+        return SimpleNamespace(
+            name=self.PANEL_ID,
+            value="tests.test_internal_panels:_ProjectPanel",
+            dist=SimpleNamespace(name=self.PANEL_ID),
+            load=lambda: _ProjectPanel,
+        )
 
+    def _section_ids(self):
         internal_ids = [panel["id"] for panel in get_internal_panels()]
         community_ids = [panel["id"] for panel in get_community_panels()]
+        return internal_ids, community_ids
 
-        self.assertIn(self.UNPACKAGED_ID, internal_ids)
-        self.assertNotIn(self.UNPACKAGED_ID, community_ids)
+    def test_register_without_an_entry_point_is_internal(self):
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
+
+        internal_ids, community_ids = self._section_ids()
+        self.assertIn(self.PANEL_ID, internal_ids)
+        self.assertNotIn(self.PANEL_ID, community_ids)
 
         response = self.client.get(reverse("dj_control_room:index"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Internal Panels")
         self.assertContains(response, "Project Lookup")
 
-    def test_register_from_a_third_party_distribution_is_community(self):
-        registry.register(_ThirdPartyReadyPanel, panel_id=self.THIRD_PARTY_ID)
+    def test_entry_point_claiming_a_registered_panel_makes_it_community(self):
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
+        entry_point = self._entry_point()
 
-        internal_ids = [panel["id"] for panel in get_internal_panels()]
-        community_ids = [panel["id"] for panel in get_community_panels()]
+        registry._load_panel(entry_point)
 
-        self.assertNotIn(self.THIRD_PARTY_ID, internal_ids)
-        self.assertIn(self.THIRD_PARTY_ID, community_ids)
+        internal_ids, community_ids = self._section_ids()
+        self.assertNotIn(self.PANEL_ID, internal_ids)
+        self.assertIn(self.PANEL_ID, community_ids)
 
-    def test_distribution_identity_takes_precedence_over_custom_app_name(self):
-        registry.register(_CustomNamespacePanel, panel_id=self.CUSTOM_NAMESPACE_ID)
-        distributions = {
-            "example_project": ["project-dist"],
-            "third_party_module": ["third-party-dist"],
-        }
+    def test_internal_false_forces_a_registered_panel_into_community(self):
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID, internal=False)
 
-        with patch(
-            "dj_control_room.utils._packages_distributions",
-            return_value=distributions,
-        ):
-            panel = registry.get_panel(self.CUSTOM_NAMESPACE_ID)
-            self.assertFalse(is_internal_panel(panel))
+        internal_ids, community_ids = self._section_ids()
+        self.assertNotIn(self.PANEL_ID, internal_ids)
+        self.assertIn(self.PANEL_ID, community_ids)
 
-            internal_ids = [panel["id"] for panel in get_internal_panels()]
-            community_ids = [panel["id"] for panel in get_community_panels()]
+    def test_internal_true_keeps_a_panel_internal_even_with_an_entry_point(self):
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID, internal=True)
+        entry_point = self._entry_point()
+        registry._load_panel(entry_point)
 
-        self.assertNotIn(self.CUSTOM_NAMESPACE_ID, internal_ids)
-        self.assertIn(self.CUSTOM_NAMESPACE_ID, community_ids)
+        internal_ids, community_ids = self._section_ids()
+        self.assertIn(self.PANEL_ID, internal_ids)
+        self.assertNotIn(self.PANEL_ID, community_ids)
 
-    def test_package_import_name_is_used_before_custom_app_name(self):
-        registry.register(_ImportPackagePanel, panel_id=self.IMPORT_PACKAGE_ID)
-        distributions = {
-            "example_project": ["project-dist"],
-            "third_party_module": ["third-party-dist"],
-        }
+    def test_internal_true_applies_when_the_entry_point_was_discovered_first(self):
+        registry._load_panel(self._entry_point())
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID, internal=True)
 
-        with patch(
-            "dj_control_room.utils._packages_distributions",
-            return_value=distributions,
-        ):
-            panel = registry.get_panel(self.IMPORT_PACKAGE_ID)
-            self.assertFalse(is_internal_panel(panel))
+        internal_ids, community_ids = self._section_ids()
+        self.assertIn(self.PANEL_ID, internal_ids)
+        self.assertNotIn(self.PANEL_ID, community_ids)
+
+    def test_register_without_internal_keeps_an_entry_point_panel_community(self):
+        registry._load_panel(self._entry_point())
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
+
+        internal_ids, community_ids = self._section_ids()
+        self.assertNotIn(self.PANEL_ID, internal_ids)
+        self.assertIn(self.PANEL_ID, community_ids)
+
+    def test_internal_override_cannot_move_a_featured_panel(self):
+        featured_panel = SimpleNamespace(
+            _registry_id=get_featured_panel_ids()[0],
+            _from_entry_point=False,
+            _internal_override=True,
+        )
+
+        self.assertFalse(is_internal_panel(featured_panel))
 
     def test_entry_point_panels_are_not_internal(self):
         internal_ids = [panel["id"] for panel in get_internal_panels()]
         self.assertNotIn("dj_cache_panel", internal_ids)
 
     def test_install_page_redirects_internal_panels_to_the_dashboard(self):
-        registry.register(_UnpackagedPanel, panel_id=self.UNPACKAGED_ID)
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
 
         response = self.client.get(
-            reverse("dj_control_room:install_panel", args=[self.UNPACKAGED_ID])
+            reverse("dj_control_room:install_panel", args=[self.PANEL_ID])
         )
         self.assertRedirects(response, reverse("dj_control_room:index"))
