@@ -2,12 +2,9 @@
 Utility functions for DJ Control Room.
 """
 
-from collections import defaultdict
 import logging
-import sys
 
 from django.apps import apps as django_apps
-from django.conf import settings
 from django.urls import reverse
 
 from .conf import panel_config
@@ -215,104 +212,31 @@ def get_featured_panels():
 CORE_PANEL_IDS = {"dj_control_room_base"}
 
 
-def _normalize_dist_name(name):
-    return name.lower().replace("-", "_")
-
-
-def _packages_distributions():
-    """Map top-level import names to distribution names (PEP 503)."""
-    if sys.version_info >= (3, 10):
-        from importlib.metadata import packages_distributions
-
-        return packages_distributions()
-
-    from importlib.metadata import distributions
-
-    mapping = defaultdict(list)
-    for dist in distributions():
-        dist_name = dist.metadata["Name"]
-        top_level = dist.read_text("top_level.txt")
-        if top_level:
-            names = [line.strip() for line in top_level.splitlines() if line.strip()]
-        else:
-            names = []
-            try:
-                files = dist.files or []
-            except Exception:
-                files = []
-            seen = set()
-            for file in files:
-                first = file.parts[0] if file.parts else ""
-                if not first or first.endswith((".dist-info", ".data")):
-                    continue
-                name = first[:-3] if first.endswith(".py") else first
-                if name not in seen:
-                    seen.add(name)
-                    names.append(name)
-        for name in names:
-            mapping[name].append(dist_name)
-    return mapping
-
-
-def _distributions_for_package(package_name):
-    """Normalized dist names that own this top-level import package."""
-    if not package_name or not isinstance(package_name, str):
-        return set()
-    top = package_name.split(".")[0]
-    names = _packages_distributions().get(top) or []
-    return {_normalize_dist_name(name) for name in names}
-
-
-def _has_foreign_distribution(panel):
-    """True when the panel's package belongs to an installed third-party dist."""
-    package = getattr(panel, "package", None)
-    installed_dists = {
-        _normalize_dist_name(dist_name)
-        for dist_names in _packages_distributions().values()
-        for dist_name in dist_names
-    }
-    package_dist = _normalize_dist_name(package) if package else None
-    panel_dists = (
-        {package_dist}
-        if package_dist in installed_dists
-        else _distributions_for_package(package)
-        or _distributions_for_package(
-            getattr(panel, "app_name", None)
-            or getattr(panel, "_registry_id", None)
-        )
-    )
-    if not panel_dists:
-        return False
-    settings_module = getattr(settings, "SETTINGS_MODULE", "") or ""
-    project_top = settings_module.split(".")[0]
-    project_dists = _distributions_for_package(project_top)
-    return not panel_dists <= project_dists
-
-
 def is_internal_panel(panel):
     """
-    True for unpackaged internal panels.
+    True for panels added through ``registry.register()`` with no entry point.
 
-    Entry-point plugins are never internal. A ``register()`` panel whose
-    import package belongs to some other installed distribution is treated
-    as community (``register()`` is public and packaged plugins may use it).
-    Featured and core IDs are excluded so they stay in their own buckets.
+    Featured and core IDs are always excluded so they stay in their own
+    buckets. An explicit ``internal=True|False`` passed to ``register()`` wins
+    over the entry-point check; otherwise entry-point plugins are never
+    internal.
     """
     panel_id = getattr(panel, "_registry_id", None)
     if not panel_id:
         return False
-    if getattr(panel, "_from_entry_point", False):
-        return False
     if is_featured_panel(panel_id) or panel_id in CORE_PANEL_IDS:
         return False
-    if _has_foreign_distribution(panel):
-        return False
-    return True
+
+    internal_override = getattr(panel, "_internal_override", None)
+    if isinstance(internal_override, bool):
+        return internal_override
+
+    return not getattr(panel, "_from_entry_point", False)
 
 
 def get_internal_panels():
     """
-    Get unpackaged internal panels (no entry point, not a third-party dist).
+    Get internal panels (see ``is_internal_panel``).
 
     Returns:
         list: List of internal panel data
