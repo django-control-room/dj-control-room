@@ -257,6 +257,10 @@ class PanelRegistry:
         self._validate_panel(panel, panel_id)
 
         if panel_id in self._panels:
+            # Autodiscovery may have registered this ID first; honor an
+            # explicit override on the panel that is kept.
+            if isinstance(internal, bool):
+                self._panels[panel_id]._internal_override = internal
             logger.warning(
                 f"Panel ID '{panel_id}' is already registered. "
                 f"Skipping duplicate manual registration of {panel_class.__name__}."

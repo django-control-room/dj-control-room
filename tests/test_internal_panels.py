@@ -33,6 +33,14 @@ class TestInternalPanels(CeleryPanelTestCase):
         registry._panels.pop(self.PANEL_ID, None)
         super().tearDown()
 
+    def _entry_point(self):
+        return SimpleNamespace(
+            name=self.PANEL_ID,
+            value="tests.test_internal_panels:_ProjectPanel",
+            dist=SimpleNamespace(name=self.PANEL_ID),
+            load=lambda: _ProjectPanel,
+        )
+
     def _section_ids(self):
         internal_ids = [panel["id"] for panel in get_internal_panels()]
         community_ids = [panel["id"] for panel in get_community_panels()]
@@ -52,12 +60,7 @@ class TestInternalPanels(CeleryPanelTestCase):
 
     def test_entry_point_claiming_a_registered_panel_makes_it_community(self):
         registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
-        entry_point = SimpleNamespace(
-            name=self.PANEL_ID,
-            value="tests.test_internal_panels:_ProjectPanel",
-            dist=SimpleNamespace(name=self.PANEL_ID),
-            load=lambda: _ProjectPanel,
-        )
+        entry_point = self._entry_point()
 
         registry._load_panel(entry_point)
 
@@ -74,17 +77,28 @@ class TestInternalPanels(CeleryPanelTestCase):
 
     def test_internal_true_keeps_a_panel_internal_even_with_an_entry_point(self):
         registry.register(_ProjectPanel, panel_id=self.PANEL_ID, internal=True)
-        entry_point = SimpleNamespace(
-            name=self.PANEL_ID,
-            value="tests.test_internal_panels:_ProjectPanel",
-            dist=SimpleNamespace(name=self.PANEL_ID),
-            load=lambda: _ProjectPanel,
-        )
+        entry_point = self._entry_point()
         registry._load_panel(entry_point)
 
         internal_ids, community_ids = self._section_ids()
         self.assertIn(self.PANEL_ID, internal_ids)
         self.assertNotIn(self.PANEL_ID, community_ids)
+
+    def test_internal_true_applies_when_the_entry_point_was_discovered_first(self):
+        registry._load_panel(self._entry_point())
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID, internal=True)
+
+        internal_ids, community_ids = self._section_ids()
+        self.assertIn(self.PANEL_ID, internal_ids)
+        self.assertNotIn(self.PANEL_ID, community_ids)
+
+    def test_register_without_internal_keeps_an_entry_point_panel_community(self):
+        registry._load_panel(self._entry_point())
+        registry.register(_ProjectPanel, panel_id=self.PANEL_ID)
+
+        internal_ids, community_ids = self._section_ids()
+        self.assertNotIn(self.PANEL_ID, internal_ids)
+        self.assertIn(self.PANEL_ID, community_ids)
 
     def test_internal_override_cannot_move_a_featured_panel(self):
         featured_panel = SimpleNamespace(
